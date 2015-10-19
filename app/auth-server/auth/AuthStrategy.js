@@ -13,7 +13,6 @@ const ERROR_NO_SESSION = 'No session found user will not be returned to the corr
 passport.use(MongoLocalStrategy);
 passport.use(SamlStrategy);
 passport.serializeUser((user, done) => {
-    console.log(user);
     sessionUserApiStore.save(user).then(user => {
         done(null, user._id);
     }).catch(err => {
