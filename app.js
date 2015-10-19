@@ -16,8 +16,8 @@ var config = {
     },
     httpsOnly: false,
     __dirname: __dirname,
-    routes_root_path: __dirname + '/app/',
-    services_root_path: __dirname + '/app/',
+    routes_root_path: __dirname + '/app/auth-server',
+    services_root_path: __dirname + '/app/auth-server',
     static_root_path: __dirname + '/public',
     session: {
         store: new FileStore({}),
