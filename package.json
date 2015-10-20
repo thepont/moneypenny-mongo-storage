@@ -5,10 +5,12 @@
   "main": "app.js",
   "dependencies": {
     "auth-server": "file:./app/auth-server",
+    "babel": "^5.8.23",
     "dotenv": "^1.2.0",
     "elephas": "^0.2.6",
     "es6-promise": "^3.0.2",
     "express-session": "^1.11.3",
+    "jsonwebtoken": "^5.4.0",
     "oauth20-provider": "^0.6.0",
     "passport": "^0.3.0",
     "redis-sessions": "^0.4.1",

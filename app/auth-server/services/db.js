@@ -28,7 +28,9 @@ var conn = new mongodb.Db(PROPERTIES.MONGODB_DB, server, {
  */
 var db = {
     local_users: conn.collection('local_users'),
-    session_users: conn.collection('session_users')
+    session_users: conn.collection('session_users'),
+	oauth_refresh_token: conn.collection('oauth_refresh_token'),
+	oauth_token: conn.collection('oauth_token'),
 };
 
 conn.open(function(err) {
