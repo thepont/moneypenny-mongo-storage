@@ -31,6 +31,7 @@ var db = {
     session_users: conn.collection('session_users'),
 	oauth_refresh_token: conn.collection('oauth_refresh_token'),
 	oauth_token: conn.collection('oauth_token'),
+	oauth_client_store: conn.collection('oauth_client_store')
 };
 
 conn.open(function(err) {
