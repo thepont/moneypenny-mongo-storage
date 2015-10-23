@@ -4,24 +4,32 @@ var db = require('auth-server/services/db');
 var Collection = require('auth-server/services/collection');
 var oauthRefreshCollection = new Collection(db.oauth_token);
 var crypto = require('crypto');
+var jwt = require('jsonwebtoken');
+
+var sessionUserApiStore = require('auth-server/auth/session/SessionUserApiStore');
+const SECRET = 'a_password';
 
 module.exports = {
 	getToken : function(accessToken){
 		return accessToken.token;
 	},
 	create: function(userId, clientId, scope, ttl, cb){
-		var token = crypto.randomBytes(64).toString('hex');
-    	var accessToken = {
-			token: token, 
-			userId: userId, 
-			clientId: clientId, 
-			scope: scope,
-			expiresAt : new Date((new Date()).getUTCMilliseconds() + ttl)
-		};
-        oauthRefreshCollection.save(accessToken).then(()=>{
-            cb(null, accessToken);
-        }).catch(err=>{
-            cb(err);  
+        sessionUserApiStore.load(userId).then(user => {
+            var token = jwt.sign(user, SECRET, {expiresIn : ttl});
+            var accessToken = {
+                token: token,
+                userId: userId,
+                clientId: clientId,
+                scope: scope,
+                expiresAt : new Date((new Date()).getUTCMilliseconds() + ttl)
+            };
+            oauthRefreshCollection.save(accessToken).then(()=>{
+               return cb(null, token);
+            }).catch(err=>{
+               return cb(err);
+            });
+        }).catch(err => {
+            return cb(err);
         });
 	},
 	fetchByToken : function(token, callback){
