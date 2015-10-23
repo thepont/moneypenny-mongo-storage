@@ -9,5 +9,6 @@ function oAuth2ClientQuery(){
 			}
 			return this;
 		}
+    }
 }
 module.exports = oAuth2ClientQuery;

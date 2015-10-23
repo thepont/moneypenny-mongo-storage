@@ -144,6 +144,18 @@ var Collection = function(dbCollection) {
             });
         }); 
     };
+
+    this.remove = function(params){
+        var query = params.query;
+        return new Promise((resolve, reject) => {
+            dbCollection.remove(query, (err, num) => {
+                if(err){
+                    return reject(err);
+                }
+                return resolve(num);
+            })
+        });
+    }
 }; 
 
 module.exports = Collection;

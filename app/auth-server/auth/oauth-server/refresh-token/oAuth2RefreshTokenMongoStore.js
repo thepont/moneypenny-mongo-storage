@@ -29,7 +29,9 @@ module.exports = {
     },
 
     create: function(userId, clientId, scope, cb) {
+        
         var token = crypto.randomBytes(64).toString('hex');
+        
         var refreshToken = {
             token: token,
             userId: userId,
@@ -40,6 +42,7 @@ module.exports = {
         oauthRefreshTokenCollection.save(refreshToken).then(() => {
             cb(null, token);
         }).catch((err)=>{
+            console.log("ERRROR:", err);
             cb(err);
         })
     },
@@ -54,13 +57,17 @@ module.exports = {
     },
     removeByUserIdClientId: function(userId, clientId, cb) {
         var query = oAuth2Query().clientIdEquals(clientId).userIdEquals(userId);
-        oauthRefreshTokenCollection.remove(query).catch((err)=>{
-          cb(err);  
+        oauthRefreshTokenCollection.remove(query).then(()=>{
+            cb(null);
+        }).catch((err)=>{
+            cb(err);  
         });
     },
     removeByRefreshToken: function(token, cb) {
         var query = oAuth2Query().tokenEquals(token);
-        oauthRefreshTokenCollection.remove(query).catch((err)=>{
+        oauthRefreshTokenCollection.remove(query).then(()=>{
+           cb(null); 
+        }).catch((err)=>{
           cb(err);  
         });
     }

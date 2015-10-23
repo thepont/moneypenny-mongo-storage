@@ -1,6 +1,6 @@
 var db = require('auth-server/services/db').db;
 var Collection = require('auth-server/services/collection');
-var LocalUserQuery = require('./LocalUserQuery');
+var UserQuery = require('./UserQuery');
 
 var users = new Collection(db.users);
 
@@ -19,7 +19,7 @@ module.exports = {
      * @returns {Promise<User>} promise returning the user searched for
      */ 
     getUser: function(userId){
-        var query = LocalUserQuery().equalsId(userId);
+        var query = UserQuery().equalsId(userId);
         return users.findOne(query);
     }
 }

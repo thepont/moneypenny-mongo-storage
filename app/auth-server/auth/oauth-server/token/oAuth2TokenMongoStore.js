@@ -3,6 +3,7 @@ var oAuth2TokenQuery = require('./oAuth2TokenQuery')
 var db = require('auth-server/services/db');
 var Collection = require('auth-server/services/collection');
 var oauthRefreshCollection = new Collection(db.oauth_token);
+var crypto = require('crypto');
 
 module.exports = {
 	getToken : function(accessToken){
@@ -15,8 +16,13 @@ module.exports = {
 			userId: userId, 
 			clientId: clientId, 
 			scope: scope,
-			expiresAt : new Date((new Data()).getUTCMilliseconds() + ttl)
+			expiresAt : new Date((new Date()).getUTCMilliseconds() + ttl)
 		};
+        oauthRefreshCollection.save(accessToken).then(()=>{
+            cb(null, accessToken);
+        }).catch(err=>{
+            cb(err);  
+        });
 	},
 	fetchByToken : function(token, callback){
 		var query = oAuth2TokenQuery().findByToken(token);
