@@ -1,19 +1,16 @@
 module.exports = function(grunt){
     grunt.initConfig({
-        karma: {
+        mochaTest: {
             options: {
-                configFile: 'tests/karma.conf.js',
-                files: ['../**/__karma__/*.js']
+                require: './tests/mocha-setup.js',
+                reporter: 'spec',
+                captureFile: 'results.txt', // Optionally capture the reporter output to a file
+                quiet: false, // Optionally suppress output to standard out (defaults to false)
+                clearRequireCache: false // Optionally clear the require cache before running tests (defaults to false)
             },
-            development: {
-                singleRun: false,
-                autoWatch: true,
-            },
-            single: {
-                singleRun: true
-            },
+            src: ['**/__test__/*.js']
         }
     });
-    grunt.loadNpmTasks('grunt-karma');
-    grunt.registerTask('test', ['karma:single']);
+    grunt.loadNpmTasks('grunt-mocha-test');
+    grunt.registerTask('test', ['mochaTest']);
 };
