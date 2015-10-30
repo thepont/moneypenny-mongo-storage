@@ -7,38 +7,14 @@ module.exports = function(config) {
         reporters: ['mocha', 'html', 'coverage', 'junit'],
         singleRun: true,
         autoWatch: false,
-        autoWatchBatchDelay: 400,
-        webpack: {
-            resolve : {
-                extensions: ['','.js','.jsx']
-            },
-            devtool: 'inline-source-map',
-            module: {
-                loaders: [
-                    {
-                        test: /\.jsx?$/,
-                        exclude: /node_modules\/(?!@auditr|bd-        stampy).*/,
-                        loader: 'babel-loader'
-                    }
-                ],
-                postLoaders: [{
-                    test: /\.jsx?$/,
-                    exclude: /(node_modules\/(?!@auditr).*|tests)/,
-                    loader: 'istanbul-instrumenter'
-                }]
-            },
-            externals: undefined
-        },
-        webpackServer: {
-            noInfo: true
-        },
-        coverageReporter: {
-            dir: process.env.CIRCLE_ARTIFACTS || 'coverage',
-            reporters: ['html']
-        },
-        junitReporter: {
-            outputDir: process.env.CIRCLE_TEST_REPORTS || 'junit'
-        }
+        autoWatchBatchDelay: 400
+//        coverageReporter: {
+//            dir: process.env.CIRCLE_ARTIFACTS || 'coverage',
+//            reporters: ['html']
+//        },
+//        junitReporter: {
+//            outputDir: process.env.CIRCLE_TEST_REPORTS || 'junit'
+//       }
     });
 };
 
