@@ -1,20 +1,8 @@
-var should = require('should');
+
 var OAuth2ClientQuery = require('../oAuth2ClientQuery');
+var QueryTests = require('auth-server/util/test/QueryTests')
 
-
-itsAValidQueryObject = function(query){
-    var queryInstance = query(); 
-    it('Has .query property', () => {
-        queryInstance.should.have.property('query');
-    });
-    it('Has projection property', () => {
-        queryInstance.should.have.property('projection');
-    });
-}
-
-describe('oAuth2ClientQuery()', () => {
-    //Move into default query tester.
-    it('Has .query property', () => {
-        
-    });
+describe('oAuth2ClientQuery()', () => {   
+    QueryTests.itsAValidQueryObject(OAuth2ClientQuery);
+    QueryTests.itCreatesIDQuery(OAuth2ClientQuery);
 });

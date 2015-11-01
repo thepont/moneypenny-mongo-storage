@@ -1,6 +1,6 @@
 function oAuth2RefreshTokenQuery(){
 	return {
-		query : '',
+		query : {},
 		projection:{},
 		tokenEquals : function(token) {
 			this.query = {
