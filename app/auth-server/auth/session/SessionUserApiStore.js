@@ -19,7 +19,6 @@ module.exports = {
      */ 
     load: function(id){
         var query = SessionUserQuery().idEquals(id);
-        console.log(query);
         return sessionUsersCollection.findOne(query);
     }
 }
