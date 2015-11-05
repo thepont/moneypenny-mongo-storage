@@ -35,20 +35,7 @@ var db = {
     oauth_code_store: conn.collection('oauth_code_store')
 };
 
-conn.open(function(err) {
-	if (err) {
-		// logger.error('Db connection failed', {error: err});
-	}
-	else {
-		// // logger.success('Db connected');
-		// db.users.createIndex( { 'username': 1 }, { unique: true }, function(err, index){
-		// 	if (err){
-		// 		// logger.error('Error Creating Index username' , err);
-		// 	} else {
-		// 		// logger.debug('Created Index', index);
-		// 	}
-		// });
-	}
+conn.open((err) => {
 });
 
 module.exports = db;
