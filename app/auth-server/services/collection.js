@@ -28,7 +28,7 @@ var Collection = function(dbCollection) {
      * Returns an array of documents found with the find criteria sorted by the sort (param.sort) criteria,
      * and found using the (param.find) find critera
      * 
-     * @param {Object} params paramters for finding the documents, object with param.query, param.projection and param.sort
+     * @param {Query} params paramters for finding the documents, object with param.query, param.projection and param.sort
      * @returns {Promise<Object[]>} array of documents found from the query.
      */
 
@@ -53,7 +53,8 @@ var Collection = function(dbCollection) {
     * Returns a single document found with the query passed in via param.query, 
     * using the projection param.projection
     *
-    * @param {Object} params paramters object with a query and projection
+    * @param {Query} params paramters object with a query and projection
+     * @returns {Promise<Object>} first document found with the query.
     */
      
     this.findOne = function(params){
@@ -119,7 +120,7 @@ var Collection = function(dbCollection) {
     /**
      * Updates all documents matching a query.
      *
-     * @param {Object} query query to use to find documents to update
+     * @param {Query} query query to use to find documents to update
      * @param {Object} doc document to update in the database.
      * @returns {Promise<Object>} Document updated
      */
@@ -157,7 +158,7 @@ var Collection = function(dbCollection) {
      * Aggregates a collection.
      * 
      * @param {Object[]} array for aggregation pipeline.
-     * @return {Object[]} documents that match the aggregation.
+     * @return {Promise<Object[]>} documents that match the aggregation.
      */
 
     this.aggregate = function(query){
@@ -171,6 +172,13 @@ var Collection = function(dbCollection) {
         }); 
     };
 
+
+    /**
+     * Removes documents that match a a collection.
+     * 
+     * @param {Query} query that matches documents to be removed
+     * @return {Promise<Integer>} Number of documents removed.
+     */
     this.remove = function(params){
         return checkParams(params)
             .then(()=>{ 
