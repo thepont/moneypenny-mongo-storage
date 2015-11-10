@@ -9,13 +9,14 @@ module.exports = {
 		return client.id;
 	},
 	getRedirectUri: function(client){
-        console.log(client);
 		return client.redirectUri;
 	},
 	fetchById : function(clientId, cb){
-		var query = oAuth2ClientQuery(clientId);
+		var query = oAuth2ClientQuery().idEquals(clientId);
 		oauthClientCollection.findOne(query).then((client) => {
 			return cb(null, client);
+		}).catch((err)=>{
+			return cb(err, null);
 		});
 	},
 	checkSecret : function(client, secret, cb){

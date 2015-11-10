@@ -3,6 +3,7 @@ var oAuth2CodeQuery = require('./oAuth2CodeQuery');
 var db = require('auth-server/services/db');
 var Collection = require('auth-server/services/collection');
 var oAuth2CodeCollection = new Collection(db.oauth_code_store);
+var logger = require('auth-server/util/logger');
 
 const SECRET = 'secret';
 
@@ -11,17 +12,14 @@ module.exports = {
         return code.userId;
     },
     getClientId: function(code){
-        return code.getClientId;
+        return code.clientId;
     },
     getScope: function(code){
         return code.scope;
     },
     checkTTL: function(code){
-        //TODO: GET METHOD TO WORK
-        console.log(code);
-        return true;
         try{
-            jwt.verify(code.code);
+            jwt.verify(code.code,SECRET);
             return true;
         } catch (err){
             return false;
@@ -34,15 +32,16 @@ module.exports = {
             scope: scope,
             ttl: ttl
         }
-        var code = jwt.sign(params, SECRET, {maxAge: ttl});
-        params.code = code;
-        
-        console.log(oAuth2CodeCollection);
-
-        oAuth2CodeCollection.save(params).then(() => {
+        return new Promise((resolve, reject)=>{
+            var code = jwt.sign(params, SECRET, {maxAge: ttl, ignoreExpiration: false});
+            params.code = code;
+            return oAuth2CodeCollection.save(params).then(() => {
+                return resolve(code);
+            })
+        }).then(code =>{
             return cb(null, code);
         }).catch((err)=>{
-            console.log(err);
+            logger.error(err);
             return cb(err);
         });
     },
@@ -53,7 +52,7 @@ module.exports = {
                 return cb(null, params);
             })
             .catch(err => {
-                console.log("ERROR :", err);
+                logger.error(err);
                 return cb(err);
             });
     },
