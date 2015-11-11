@@ -7,4 +7,5 @@ machine:
   python:
     version: 2.7.9
   post:
+    - sudo apt-get install build-essential
     - npm install -g npm@3.x.x
