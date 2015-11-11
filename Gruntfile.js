@@ -42,7 +42,8 @@ module.exports = function(grunt){
                     //istanbulOptions: ['--use-babel-runtime'],
                     //mochaOptions: ['require ./tests/bable-setup.js'],
                     require: './tests/bable-setup.js',
-                    recursive: true
+                    recursive: true,
+                    istanbulOptions: ['--include-all-sources']
                     // reportFormats:  ['lcov', 'html'] 
                 }
             }
