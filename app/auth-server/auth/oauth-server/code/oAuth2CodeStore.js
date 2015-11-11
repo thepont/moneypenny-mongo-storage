@@ -37,6 +37,8 @@ module.exports = {
             params.code = code;
             return oAuth2CodeCollection.save(params).then(() => {
                 return resolve(code);
+            }).catch(err =>{
+                return reject(err);
             })
         }).then(code =>{
             return cb(null, code);

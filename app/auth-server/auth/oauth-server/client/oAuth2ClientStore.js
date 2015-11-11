@@ -3,6 +3,9 @@ var db = require('auth-server/services/db');
 var Collection = require('auth-server/services/collection');
 var oauthClientCollection = new Collection(db.oauth_client_store);
 var PasswordCrypto = require('auth-server/util/PasswordCrypto');
+var logger = require('auth-server/util/logger');
+
+const ERROR_CLIENT_CHECK_SECRET = 'Checking client secret failed';
 
 module.exports = {
 	getId: function(client){
@@ -20,14 +23,11 @@ module.exports = {
 		});
 	},
 	checkSecret : function(client, secret, cb){
-		//TODO: fix so we down allow everyone
-        return cb(null, true);
-
         //check hash against secret, see if it looks correct.
         PasswordCrypto.checkPassword(secret, client.secret).then(()=>{
            return cb(null, true);
         }).catch((err)=>{
-            console.log(err);
+           logger.error(ERROR_CLIENT_CHECK_SECRET, client, err)
            return cb(null, false);
         })
 	}
