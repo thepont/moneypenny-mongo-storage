@@ -1,8 +1,7 @@
 var winston = require('winston');
 require("babel/register")({
     highlightCode: false,
-    ignore: /node_modules|node-oauth20-provider/    
-//    ignore: /node-oauth20-provider/
+    ignore: /node_modules\/(?!auth-server)|node-oauth20-provider/
  });
 
 // Disable logging while testing.

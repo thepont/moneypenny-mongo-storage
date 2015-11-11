@@ -3,7 +3,7 @@ require('dotenv').load();
 //require('es6-promise').polyfill();
 require("babel/register")({
     highlightCode: false,
-    ignore: /node_modules|node-oauth20-provider/    
+    ignore: /node_modules\/(?!auth-server)|node-oauth20-provider/    
  });
 var session = require('express-session');
 var FileStore = require('session-file-store')(session);
