@@ -17,6 +17,7 @@
     "session-file-store": "0.0.21"
   },
   "devDependencies": {
+    "babel-istanbul": "^0.4.1",
     "chai": "^3.4.0",
     "grunt": "^0.4.5",
     "grunt-karma": "^0.12.1",

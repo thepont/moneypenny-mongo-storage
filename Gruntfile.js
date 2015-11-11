@@ -36,6 +36,7 @@ module.exports = function(grunt){
                     dryRun: false,
                     coverageFolder: 'coverage',
                     root: './app/auth-server',
+                    excludes: ['**/__test__/*.js'],
                     print: 'detail',
                     //scriptPath: require.resolve('babel-istanbul'),
                     //istanbulOptions: ['--use-babel-runtime'],
