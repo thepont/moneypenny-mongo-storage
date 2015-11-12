@@ -4,7 +4,7 @@ var sessionUserApiStore = require('auth-server/auth/session/SessionUserApiStore'
 var passport = require('passport');
 var logger = require('auth-server/util/logger');
 
-const NO_AUTH_REQUIRED = ['/login.html', '/auth/local/login', '/auth/saml/login/callback', '/auth/saml/login'];
+const NO_AUTH_REQUIRED = ['/login.html', '/auth/local/login', '/auth/saml/login/callback', '/auth/saml/login', '/oauth2/token'];
 
 const ERROR_NO_USER = 'User logged in but no session user found in database';
 const ERROR_SERIALIZING_USER = 'User logged in but unable to serialize into database';

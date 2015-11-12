@@ -30,6 +30,5 @@ function LocalUserQuery(){
         }
     };
 };
-
 module.exports = LocalUserQuery;
 

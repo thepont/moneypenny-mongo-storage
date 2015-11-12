@@ -28,23 +28,14 @@ var conn = new mongodb.Db(PROPERTIES.MONGODB_DB, server, {
  */
 var db = {
     local_users: conn.collection('local_users'),
-    session_users: conn.collection('session_users')
+    session_users: conn.collection('session_users'),
+	oauth_refresh_token: conn.collection('oauth_refresh_token'),
+	oauth_token: conn.collection('oauth_token'),
+	oauth_client_store: conn.collection('oauth_client_store'),
+    oauth_code_store: conn.collection('oauth_code_store')
 };
 
-conn.open(function(err) {
-	if (err) {
-		// logger.error('Db connection failed', {error: err});
-	}
-	else {
-		// // logger.success('Db connected');
-		// db.users.createIndex( { 'username': 1 }, { unique: true }, function(err, index){
-		// 	if (err){
-		// 		// logger.error('Error Creating Index username' , err);
-		// 	} else {
-		// 		// logger.debug('Created Index', index);
-		// 	}
-		// });
-	}
+conn.open((err) => {
 });
 
 module.exports = db;

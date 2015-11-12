@@ -1,4 +1,5 @@
 var ObjectID = require('mongodb').ObjectID;
+var logger = require('auth-server/util/logger');
 
 /**
  * Creates a new Collection for a specific MongoDB collection.
@@ -9,49 +10,67 @@ var ObjectID = require('mongodb').ObjectID;
  * @class
  */
 
-var Collection = function(dbCollection) {
+const ERROR_NO_PARAMS = "Please supply approprate parameters";
+
+var checkParams = function(param){
+    return new Promise((resolve, reject) => {
+        if (typeof(param) === "undefined"){
+            var err = Error(ERROR_NO_PARAMS);
+            logger.error(err);
+            return reject(err);
+        }
+        return resolve(param);
+    });
+}
+
+var Collection = function(dbCollection) { 
     /**
      * Returns an array of documents found with the find criteria sorted by the sort (param.sort) criteria,
      * and found using the (param.find) find critera
      * 
-     * @param {Object} params paramters for finding the documents, object with param.query, param.projection and param.sort
+     * @param {Query} params paramters for finding the documents, object with param.query, param.projection and param.sort
      * @returns {Promise<Object[]>} array of documents found from the query.
      */
 
     this.find = function(params){
-        return new Promise((resolve, reject) => {
-            console.log(params);
-            var query = params.query || {};
-            var projection = params.projection || {};
-            var sort = params.sort || {};
-            dbCollection.find(query,projection).sort(sort).toArray((err, results) => {
-                    if (err) {
-                        return reject(err);
-                    }                   
-                return resolve(results);
+       return checkParams(params)
+            .then(()=>{            
+                return new Promise((resolve, reject) => {
+                    var query = params.query || {};
+                    var projection = params.projection || {};
+                    var sort = params.sort || {};
+                    dbCollection.find(query,projection).sort(sort).toArray((err, results) => {
+                            if (err) {
+                                return reject(err);
+                            }                   
+                        return resolve(results);
+                    });
+                });
             });
-        });
     };
      
     /**
     * Returns a single document found with the query passed in via param.query, 
     * using the projection param.projection
     *
-    * @param {Object} params paramters object with a query and projection
+    * @param {Query} params paramters object with a query and projection
+     * @returns {Promise<Object>} first document found with the query.
     */
      
     this.findOne = function(params){
-        var query = params.query || {};
-        var projection = params.projection || {};
-        
-        return new Promise((resolve, reject) => {
-            dbCollection.findOne(query ,projection, function(err, result) {
-                    if (err) {
-                        return reject(err);
-                    }
-                return resolve(result);
+        return checkParams(params)
+            .then(()=>{  
+                return new Promise((resolve, reject) => {
+                    var query = params.query || {};
+                    var projection = params.projection || {};
+                    dbCollection.findOne(query ,projection, function(err, result) {
+                            if (err) {
+                                return reject(err);
+                            }
+                        return resolve(result);
+                    });
+                });
             });
-        });
     };
     
     /**
@@ -62,20 +81,22 @@ var Collection = function(dbCollection) {
     */
     
     this.save = function(doc) {
-        return new Promise((resolve, reject) => {    
-            if (doc._id) {
-                doc._id = new ObjectID(doc._id);
-            }
-            
-            dbCollection.save(doc, function(err, result) {
-                if (err) {
-                    return reject(err);
-                }
-
+        return checkParams(doc).then(()=>{
+            return new Promise((resolve, reject) => {    
                 if (doc._id) {
-                    return resolve(doc);
+                    doc._id = new ObjectID(doc._id);
                 }
-                return resolve(result.ops[0]);
+                
+                dbCollection.save(doc, function(err, result) {
+                    if (err) {
+                        return reject(err);
+                    }
+    
+                    if (doc._id) {
+                        return resolve(doc);
+                    }
+                    return resolve(result.ops[0]);
+                });
             });
         });
     };
@@ -87,13 +108,19 @@ var Collection = function(dbCollection) {
      * @returns {Promise<Object>} Document updated
      */
     this.updateWithId = function(doc){
-        return this.update({_id : doc._id}, doc);
+        return checkParams(doc)
+            .then(()=>{ 
+                return checkParams(doc._id) 
+                })
+            .then(()=>{ 
+                return this.update({_id : doc._id}, doc)
+            });
     };
     
     /**
      * Updates all documents matching a query.
      *
-     * @param {Object} query query to use to find documents to update
+     * @param {Query} query query to use to find documents to update
      * @param {Object} doc document to update in the database.
      * @returns {Promise<Object>} Document updated
      */
@@ -131,7 +158,7 @@ var Collection = function(dbCollection) {
      * Aggregates a collection.
      * 
      * @param {Object[]} array for aggregation pipeline.
-     * @return {Object[]} documents that match the aggregation.
+     * @return {Promise<Object[]>} documents that match the aggregation.
      */
 
     this.aggregate = function(query){
@@ -144,6 +171,31 @@ var Collection = function(dbCollection) {
             });
         }); 
     };
+
+
+    /**
+     * Removes documents that match a a collection.
+     * 
+     * @param {Query} query that matches documents to be removed
+     * @return {Promise<Integer>} Number of documents removed.
+     */
+    this.remove = function(params){
+        return checkParams(params)
+            .then(()=>{ 
+                return checkParams(params.query)
+                })
+            .then(()=>{
+                return new Promise((resolve, reject) => {
+                    var query = params.query;
+                    dbCollection.remove(query, (err, num) => {
+                        if(err){
+                            return reject(err);
+                        }
+                        return resolve(num);
+                    })
+                });
+            });
+    }
 }; 
 
 module.exports = Collection;

@@ -12,7 +12,7 @@ var routes = {
      * Called when the remote server requests a token from the server.
      */ 
     '/oauth2/token' : {
-        get: oAuth2Server.controller.token
+        post: oAuth2Server.controller.token
     }
 }
 module.exports = routes;
