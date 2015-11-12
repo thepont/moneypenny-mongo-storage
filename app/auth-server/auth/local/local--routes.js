@@ -4,8 +4,8 @@ var routes = {
      * Login using the local stratergy. 
      */
     '/auth/local/login' : {
-        post : function(req, res, next){ 
-            passport.authenticate('local', function(err,user,info) {
+        post : (req, res, next) => { 
+            passport.authenticate('local', (err,user,info) => {
                 if(err){
                     return next(err);
                 }
@@ -16,7 +16,7 @@ var routes = {
                     if(err){
                         return next(err);
                     }
-                    if( req.session.returnTo ){
+                    if( req.session && req.session.returnTo ){
                         return res.redirect(req.session.returnTo);
                     }
                     return res.redirect('/local/details');
@@ -29,8 +29,7 @@ var routes = {
      */
     '/local/details' : {
         get : function(req,res,next){
-                return res.json(req.user);
-            
+            return res.json(req.user);
         }
     }
 }
