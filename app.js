@@ -11,7 +11,6 @@ var fs = require('fs');
 
 var passport = require('passport');
 
-var anotherlineofcode = 1;
 
 var config = {
     server: {
