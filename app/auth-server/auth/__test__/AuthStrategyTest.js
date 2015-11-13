@@ -8,6 +8,62 @@ var strategy = 'local';
 
 describe('AuthStrategy', ()=>{
 	describe('loginAndRedirect', ()=>{
+		it('Redirects to authentication page if required', () => {
+			var authStrategy = require('../AuthStrategy');
+			var req = {
+				isAuthenticated : () => false,
+				path : 'test'
+			}
+			var res = {
+				redirect :  sinon.stub().returns({})
+			}
+			authStrategy.ensureAuthenticated(req, res);
+			res.redirect.calledWithMatch(authStrategy.loginRedirectUrl).should.be.true();
+		});
+		
+		it('Redirects calls next without error if user is authenticated', () => {
+			var next = sinon.stub();
+			var authStrategy = require('../AuthStrategy');
+			var req = {
+				isAuthenticated : () => true
+			}
+			var res = {
+			}
+			authStrategy.ensureAuthenticated(req, res, next);
+			next.calledWithMatch(null).should.be.true();
+		});
+		
+		it('Redirects calls next without error if user is does not autentication for page', () => {
+			var next = sinon.stub();
+			var authStrategy = require('../AuthStrategy');
+			var req = {
+				isAuthenticated : () => false,
+				path : '/login.html'
+			}
+			var res = {
+			}
+			authStrategy.ensureAuthenticated(req, res, next);
+			next.calledWithMatch(null).should.be.true();
+		});
+		
+		it('Saves path to return for session if exists', () => {
+			var next = sinon.stub();
+			var authStrategy = require('../AuthStrategy');
+			var req = {
+				isAuthenticated : () => false,
+				path : 'test',
+				session : {},
+				originalUrl: 'test'
+			}
+			var res = {
+				redirect: () => {}
+			}
+			authStrategy.ensureAuthenticated(req, res, next);
+			req.session.returnTo.should.equal(req.path);
+		});
+		
+	});
+	describe('loginAndRedirect', ()=>{
 		it('Returns an error to the next middleware if an error occours', (done) => {
 			var authStategy = proxyquire('../AuthStrategy', {
 				passport: {

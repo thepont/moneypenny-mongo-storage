@@ -24,7 +24,6 @@ describe('local--routes', () => {
 				var localRoutes = require('../local--routes');
 				localRoutes['/local/details'].get({user: user}, res, {})
 					.should.equal(user);
-					
 			});
 		});
 	});

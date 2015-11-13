@@ -39,22 +39,21 @@ passport.deserializeUser(function(id, done) {
 
 
 module.exports = {
+    loginRedirectUrl : '/login.html',
     ensureAuthenticated: function(req, res, next){
         var authNotRequired;
         if(req.isAuthenticated()){
-            return next();
+            return next(null);
         }
         authNotRequired = NO_AUTH_REQUIRED.find(p => req.path === p);
         if (authNotRequired){
-            return next();
+            return next(null);
         }
         else {
-            if(req.path && req.session){
+            if(req.originalUrl && req.session){
                 req.session.returnTo = req.originalUrl;
-            } else {
-                req.session.returnTo = '/';
             }
-            res.redirect('/login.html');
+            res.redirect(this.loginRedirectUrl);
         }
     },
     loginAndRedirect: (loginRedirect, defaultRedirect, strategy) => (req,res,next) => {
