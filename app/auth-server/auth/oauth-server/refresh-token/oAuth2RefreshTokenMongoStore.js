@@ -2,6 +2,7 @@ var crypto = require('crypto');
 var oAuth2Query = require('./oAuth2RefreshTokenQuery');
 var db = require('auth-server/services/db');
 var Collection = require('auth-server/services/collection');
+var logger = require('auth-server/util/logger');
 var oauthRefreshTokenCollection = new Collection(db.oauth_refresh_token);
 
 module.exports = {
@@ -39,37 +40,28 @@ module.exports = {
             scope: scope
         }
         
-        oauthRefreshTokenCollection.save(refreshToken).then(() => {
-            cb(null, token);
-        }).catch((err)=>{
-            console.log("ERRROR:", err);
-            cb(err);
-        })
+        oauthRefreshTokenCollection.save(refreshToken)
+            .then(() => cb(null, token))
+            .catch((err) => cb(err));
     },
     fetchByToken: function(token, cb){
         var query = oAuth2Query().tokenEquals(token);
-        
-        oauthRefreshTokenCollection.findOne(query).then((refreshToken) => {
-            cb(null, refreshToken);
-        }).catch((err)=>{
-            cb(err);
-        })
+        oauthRefreshTokenCollection.findOne(query)
+            .then((refreshToken) => cb(null, refreshToken))
+            .catch((err) => cb(err))
     },
     removeByUserIdClientId: function(userId, clientId, cb) {
         var query = oAuth2Query().clientIdEquals(clientId).userIdEquals(userId);
-        oauthRefreshTokenCollection.remove(query).then(()=>{
-            cb(null);
-        }).catch((err)=>{
-            cb(err);  
-        });
+        
+        oauthRefreshTokenCollection.remove(query)
+            .then(() => cb(null))
+            .catch((err) => cb(err));
     },
     removeByRefreshToken: function(token, cb) {
         var query = oAuth2Query().tokenEquals(token);
-        oauthRefreshTokenCollection.remove(query).then(()=>{
-           cb(null); 
-        }).catch((err)=>{
-          cb(err);  
-        });
+        oauthRefreshTokenCollection.remove(query)
+            .then(() => cb(null))
+            .catch((err)=> cb(err));
     }
 }
 
