@@ -115,32 +115,33 @@ describe('AuthStrategy', ()=>{
 					done(err);
 				}
 			});
-			it('Returns an error on db fail', (done) => {
-				var id = new ObjectID();
-				var deserializeUserFunc;
-				proxyquire('../AuthStrategy', {
-					passport: {
-						authenticate: (stratergy, cb) => () => cb(null, {}),
-						use: () => {},
-						deserializeUser: (func) => {
-							deserializeUserFunc = func;
-						},
-						serializeUser: (func) => {},
-					},
-					'auth-server/auth/session/SessionUserApiStore' : {
-						load : () => Promise.reject()
-					}
-				})
-				deserializeUserFunc(id, (err, userRet)=>{
-					try {
-						should.exist(err);
-						done();
-					} catch(err) {
-						done(err);
-					}
-				});
 			
+		});
+		it('Returns an error on db fail', (done) => {
+			var id = new ObjectID();
+			var deserializeUserFunc;
+			proxyquire('../AuthStrategy', {
+				passport: {
+					authenticate: (stratergy, cb) => () => cb(null, {}),
+					use: () => {},
+					deserializeUser: (func) => {
+						deserializeUserFunc = func;
+					},
+					serializeUser: (func) => {},
+				},
+				'auth-server/auth/session/SessionUserApiStore' : {
+					load : () => Promise.reject('err')
+				}
+			})
+			deserializeUserFunc(id, (err, userRet)=>{
+				try {
+					should.exist(err);
+					done();
+				} catch(err) {
+					done(err);
+				}
 			});
+		
 		});
 	});
 	
