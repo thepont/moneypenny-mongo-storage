@@ -2,50 +2,17 @@ var should = require('should');
 var proxyquire = require('proxyquire');
 var sinon = require('sinon');
 
-var oAuth2 = proxyquire('../oAuth2Server', {
-	'auth-server/auth/oauth-server/refresh-token/oAuth2RefreshTokenMongoStore' : {
-		getUserId: () => {},
-		getClientId: () => {},
-		getScope: () => {},
-		fetchByToken: () => {},
-		removeByUserIdClientId: () => {},
-		removeByRefreshToken: () => {},
-		create: () => {},
-	},
-	'auth-server/auth/oauth-server/token/oAuth2TokenMongoStore' : {
-		getToken: () => {},
-		fetchByToken: () => {},
-		removeByUserIdClientId: () => {},
-		removeByRefreshToken: () => {},
-		create: () => {},
-		checkTTL: () => {},
-		getTTL: () => {}
-	},
-	'auth-server/auth/oauth-server/client/oAuth2ClientStore' : {
-		getRedirectUri: () => {},
-		fetchById: () => {},
-		checkSecret: () => {},
-		getId: () => {}
-	},
-	'auth-server/auth/oauth-server/user/oAuth2UserStore' : {
-		fetchFromRequest: () => {},
-		getId: () => {}
-	},
-	'auth-server/auth/oauth-server/code/oAuth2CodeStore': {
-		create: () => {},
-		fetchByCode: () => {},
-		removeByCode: () => {},
-		getUserId: () => {},
-		getClientId: () => {},
-		getScope: () => {},
-		checkTTL: () => {},
-	}
-	
-});
-
-
 describe('oAuthServerTest', () => {
 	it('Sets model.client functions for oauth20-provider', () => {
+		var oAuth2 = proxyquire('../oAuth2Server', {
+			'auth-server/auth/oauth-server/client/oAuth2ClientStore' : {
+				getId: () => {},
+				getRedirectUri: () => {},
+				fetchById: () => {},
+				checkSecret: () => {}
+			}
+		});
+		
 		oAuth2.model.client.getId.should.be.Function();
 		oAuth2.model.client.getRedirectUri.should.be.Function();
 		oAuth2.model.client.fetchById.should.be.Function();
@@ -57,6 +24,21 @@ describe('oAuthServerTest', () => {
 		oAuth2.model.client.checkSecret();
 	});
 	it('Sets model.refreshToken functions for oauth20-provider', () => {
+		
+		
+		var oAuth2 = proxyquire('../oAuth2Server', {
+			'auth-server/auth/oauth-server/refresh-token/oAuth2RefreshTokenMongoStore' : {
+				getUserId: () => {},
+				getClientId: () => {},
+				getScope: () => {},
+				fetchByToken: () => {},
+				removeByUserIdClientId: () => {},
+				removeByRefreshToken: () => {},
+				create: () => {},
+			}
+		});
+		
+		
 		oAuth2.model.refreshToken.getUserId.should.be.Function();
 		oAuth2.model.refreshToken.getClientId.should.be.Function();
 		oAuth2.model.refreshToken.getScope.should.be.Function();
@@ -75,6 +57,19 @@ describe('oAuthServerTest', () => {
 	});
 	
 	it('Sets model.accessToken functions for oauth20-provider', () => {
+		
+		var oAuth2 = proxyquire('../oAuth2Server', {
+			'auth-server/auth/oauth-server/token/oAuth2TokenMongoStore' : {
+				getToken: () => {},
+				fetchByToken: () => {},
+				removeByUserIdClientId: () => {},
+				removeByRefreshToken: () => {},
+				create: () => {},
+				checkTTL: () => {},
+				getTTL: () => {}
+			}
+		});
+		
 		oAuth2.model.accessToken.getToken.should.be.Function();
 		oAuth2.model.accessToken.fetchByToken.should.be.Function();
 		oAuth2.model.accessToken.checkTTL.should.be.Function();
@@ -91,6 +86,13 @@ describe('oAuthServerTest', () => {
 	});
 	
 	it('Sets model.user functions for oauth20-provider', () => {
+		var oAuth2 = proxyquire('../oAuth2Server', {
+			'auth-server/auth/oauth-server/user/oAuth2UserStore' : {
+				fetchFromRequest: () => {},
+				getId: () => {}
+			}
+		});
+		
 		oAuth2.model.user.fetchFromRequest.should.be.Function();
 		oAuth2.model.user.getId.should.be.Function();
 
@@ -99,6 +101,19 @@ describe('oAuthServerTest', () => {
 	});
 	
 	it('Sets model.code functions for oauth20-provider', () => {
+		
+		var oAuth2 = proxyquire('../oAuth2Server', {
+			'auth-server/auth/oauth-server/code/oAuth2CodeStore': {
+				create: () => {},
+				fetchByCode: () => {},
+				removeByCode: () => {},
+				getUserId: () => {},
+				getClientId: () => {},
+				getScope: () => {},
+				checkTTL: () => {},
+			}
+		});
+		
 		oAuth2.model.code.getUserId.should.be.Function();
 		oAuth2.model.code.getClientId.should.be.Function();
 		oAuth2.model.code.getScope.should.be.Function();
@@ -116,6 +131,8 @@ describe('oAuthServerTest', () => {
 	
 	describe('decision()', () => { 
 		it('Automatically decides for the user to Authorize the server', (done) => {
+			
+			var oAuth2 = require('../oAuth2Server');
 			oAuth2.controller.authorization = (req, res) => {
 				//Check that we are called with the correct parameters
 				try{
