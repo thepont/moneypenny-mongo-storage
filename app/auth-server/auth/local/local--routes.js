@@ -1,28 +1,15 @@
 var passport = require('passport');
+
+console.log(require('auth-server/auth/AuthStrategy'))
+var loginAndRedirect = require('auth-server/auth/AuthStrategy').loginAndRedirect('/local/login','/local/details','local');
+
+
 var routes = {
     /**
      * Login using the local stratergy. 
      */
     '/auth/local/login' : {
-        post : (req, res, next) => { 
-            passport.authenticate('local', (err,user,info) => {
-                if(err){
-                    return next(err);
-                }
-                if(!user){
-                    return res.redirect('/local/login'); 
-                }
-                req.logIn(user, function(err) {
-                    if(err){
-                        return next(err);
-                    }
-                    if( req.session && req.session.returnTo ){
-                        return res.redirect(req.session.returnTo);
-                    }
-                    return res.redirect('/local/details');
-                });            
-            })(req, res, next)
-        }
+        post : loginAndRedirect
     },
     /**
      * Returns the details of the logged in user.
