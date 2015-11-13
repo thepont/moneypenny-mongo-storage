@@ -28,45 +28,36 @@ passport.deserializeUser(function(id, done) {
         }
         else
         {
-            //redirect to logout when this happens
+            //redirect to logout when no user is found
             logger.error(ERROR_NO_USER, id);
             done(ERROR_NO_USER, null);
         }
     }).catch(err => {
+        logger.error(err, id);
         done(err, null);
     });
 });
 
 
 module.exports = {
+    loginRedirectUrl : '/login.html',
     ensureAuthenticated: function(req, res, next){
         var authNotRequired;
         if(req.isAuthenticated()){
-            return next();
+            return next(null);
         }
         authNotRequired = NO_AUTH_REQUIRED.find(p => req.path === p);
         if (authNotRequired){
-            return next();
+            return next(null);
         }
         else {
-            if(req.path && req.session){
+            if(req.originalUrl && req.session){
                 req.session.returnTo = req.originalUrl;
-            } else {
-                req.session.returnTo = '/';
             }
-            res.redirect('/login.html');
-        }
-    },
-    redirectAuthenticated: function(req, res){
-        if( req.session && req.session.returnTo ){
-            res.redirect(req.session.returnTo);
-        } else {
-            logger.error(ERROR_NO_SESSION);
-            res.redirect('/');
+            res.redirect(this.loginRedirectUrl);
         }
     },
     loginAndRedirect: (loginRedirect, defaultRedirect, strategy) => (req,res,next) => {
-        console.log('strategy', strategy);
         passport.authenticate(strategy, (err,user,info) => {
              if(err){
                 return next(err);

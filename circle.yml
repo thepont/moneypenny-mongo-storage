@@ -7,3 +7,4 @@ machine:
   post:
     - sudo apt-get install build-essential
     - npm install -g npm@3.x.x
+    - rm -rf node_modules/auth-server

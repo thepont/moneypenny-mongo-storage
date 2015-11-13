@@ -9,7 +9,6 @@ module.exports = new SamlStrategy(
 
         },
         function(profile, done){
-            console.log('PROFILE :', profile);
             done(null, profile.issuer.$);
         });
 
