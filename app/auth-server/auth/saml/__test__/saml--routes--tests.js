@@ -1,27 +1,29 @@
+
+var proxyquire = require('proxyquire');
+var sinon = require('sinon');
+
+var callsLoginAndRedirect = (path, method) => {
+	it('calls login and redirect', () =>{
+		var loginAndRedirect = sinon.stub(); 
+		var samlRoutes = proxyquire('../saml--routes', {
+			'auth-server/auth/AuthStrategy' : {
+				loginAndRedirect: () => loginAndRedirect
+			}
+		});
+		samlRoutes[path][method]();
+		loginAndRedirect.calledOnce.should.be.true();
+	});
+}
+
 describe('saml--routes', () => {
 	describe('/auth/saml/login/callback', () => {
 		describe('POST', () => {
-			it('Gets the userId from the refresh token object', () =>{
-				it('calls passport authenticate with the saml stratergy', ()=>{
-					
-				})
-				it('calls next(err) if an error occours with authentication', ()=>{
-					
-				})
-				it('redirects to login if no user is found', ()=>{
-					
-				})
-			});
+			callsLoginAndRedirect('/auth/saml/login/callback', 'post');
 		});
 	});
 	describe('/auth/saml/login', () => {
 		describe('GET', () => {
-		
-		});
-	});
-	describe('/auth/test/local/login', () => {
-		describe('POST', () => {
-		
+			callsLoginAndRedirect('/auth/saml/login', 'get');
 		});
 	});
 });
