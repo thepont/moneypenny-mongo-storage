@@ -1,5 +1,5 @@
-var oauth2lib = require('oauth20-provider');
-var oauth2 = new oauth2lib({log: {level: 2}});
+var OAuth2Lib = require('oauth20-provider');
+var oauth2 = new OAuth2Lib({log: {level: 2}});
 
 var oAuth2RefreshTokenMongoStore = require('auth-server/auth/oauth-server/refresh-token/oAuth2RefreshTokenMongoStore');
 var oAuth2TokenMongoStore = require('auth-server/auth/oauth-server/token/oAuth2TokenMongoStore');
