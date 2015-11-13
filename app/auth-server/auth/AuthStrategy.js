@@ -57,16 +57,7 @@ module.exports = {
             res.redirect('/login.html');
         }
     },
-    redirectAuthenticated: function(req, res){
-        if( req.session && req.session.returnTo ){
-            res.redirect(req.session.returnTo);
-        } else {
-            logger.error(ERROR_NO_SESSION);
-            res.redirect('/');
-        }
-    },
     loginAndRedirect: (loginRedirect, defaultRedirect, strategy) => (req,res,next) => {
-        console.log('strategy', strategy);
         passport.authenticate(strategy, (err,user,info) => {
              if(err){
                 return next(err);
