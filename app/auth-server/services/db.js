@@ -36,6 +36,7 @@ var db = {
 };
 
 conn.open((err) => {
+    logger.error(err);
 });
 
 module.exports = db;
