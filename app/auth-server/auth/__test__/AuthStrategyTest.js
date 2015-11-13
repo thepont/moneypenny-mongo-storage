@@ -2,11 +2,151 @@ var proxyquire = require('proxyquire');
 var sinon = require('sinon');
 var should = require('should');
 
+var {ObjectID} = require('mongodb');
 var loginRedirect = '/local/login';
 var defaultRedirect = '/local/details';
 var strategy = 'local';
 
 describe('AuthStrategy', ()=>{
+	describe('passport.serializeUser', ()=>{
+		it('Saves the user into the SessionUserApiStore and returns the id', (done) => {
+			var id = new ObjectID();
+			var serializeUserFunc;
+			var authStategy = proxyquire('../AuthStrategy', {
+				passport: {
+					authenticate: (stratergy, cb) => () => cb(null, {}),
+					use: () => {},
+					serializeUser: (func) => {
+						serializeUserFunc = func;
+					},
+					deserializeUser: (func) => {},
+				},
+				'auth-server/auth/session/SessionUserApiStore' : {
+					save : () => Promise.resolve({_id:id})
+				}
+			})
+			serializeUserFunc('user', (err, userId)=>{
+				try {
+					should.not.exist(err);
+					userId.should.equal(id);
+					done();
+				} catch(err) {
+					done(err);
+				}
+			});
+		});
+		it('Calls back with an error if it cant save to db', (done) => {
+			var id = new ObjectID();
+			var serializeUserFunc;
+			proxyquire('../AuthStrategy', {
+				passport: {
+					authenticate: (stratergy, cb) => () => cb(null, {}),
+					use: () => {},
+					serializeUser: (func) => {
+						serializeUserFunc = func;
+					},
+					deserializeUser: (func) => {},
+				},
+				'auth-server/auth/session/SessionUserApiStore' : {
+					save : () => Promise.reject('err')
+				}
+			})
+			serializeUserFunc('user', (err, userId)=>{
+				try {
+					should.exist(err);
+					done();
+				} catch(err) {
+					done(err);
+				}
+			});
+		});
+	});
+	
+	describe('passport.deserializeUser', ()=>{
+		it('Returns the user if it is found in the database', (done) => {
+			var id = new ObjectID();
+			var user = {
+				username: 'test'
+			}
+			var deserializeUserFunc;
+			proxyquire('../AuthStrategy', {
+				passport: {
+					authenticate: (stratergy, cb) => () => cb(null, {}),
+					use: () => {},
+					deserializeUser: (func) => {
+						deserializeUserFunc = func;
+					},
+					serializeUser: (func) => {},
+				},
+				'auth-server/auth/session/SessionUserApiStore' : {
+					load : () => Promise.resolve(user)
+				}
+			})
+			deserializeUserFunc(id, (err, userRet)=>{
+				try {
+					userRet.should.equal(user);
+					done();
+				} catch(err) {
+					done(err);
+				}
+			});
+		});
+		it('Returns an error if no user is found', (done) => {
+			var id = new ObjectID();
+			var deserializeUserFunc;
+			proxyquire('../AuthStrategy', {
+				passport: {
+					authenticate: (stratergy, cb) => () => cb(null, {}),
+					use: () => {},
+					deserializeUser: (func) => {
+						deserializeUserFunc = func;
+					},
+					serializeUser: (func) => {},
+				},
+				'auth-server/auth/session/SessionUserApiStore' : {
+					load : () => Promise.resolve()
+				}
+			})
+			deserializeUserFunc(id, (err, userRet)=>{
+				try {
+					should.exist(err);
+					done();
+				} catch(err) {
+					done(err);
+				}
+			});
+			it('Returns an error on db fail', (done) => {
+				var id = new ObjectID();
+				var deserializeUserFunc;
+				proxyquire('../AuthStrategy', {
+					passport: {
+						authenticate: (stratergy, cb) => () => cb(null, {}),
+						use: () => {},
+						deserializeUser: (func) => {
+							deserializeUserFunc = func;
+						},
+						serializeUser: (func) => {},
+					},
+					'auth-server/auth/session/SessionUserApiStore' : {
+						load : () => Promise.reject()
+					}
+				})
+				deserializeUserFunc(id, (err, userRet)=>{
+					try {
+						should.exist(err);
+						done();
+					} catch(err) {
+						done(err);
+					}
+				});
+			
+			});
+		});
+	});
+	
+	
+	
+	
 	describe('loginAndRedirect', ()=>{
 		it('Redirects to authentication page if required', () => {
 			var authStrategy = require('../AuthStrategy');

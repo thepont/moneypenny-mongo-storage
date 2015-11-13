@@ -28,11 +28,12 @@ passport.deserializeUser(function(id, done) {
         }
         else
         {
-            //redirect to logout when this happens
+            //redirect to logout when no user is found
             logger.error(ERROR_NO_USER, id);
             done(ERROR_NO_USER, null);
         }
     }).catch(err => {
+        logger.error(err, id);
         done(err, null);
     });
 });
