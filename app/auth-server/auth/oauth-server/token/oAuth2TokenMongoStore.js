@@ -7,7 +7,7 @@ var crypto = require('crypto');
 var jwt = require('jsonwebtoken');
 
 var sessionUserApiStore = require('auth-server/auth/session/SessionUserApiStore');
-const SECRET = 'a_password';
+const SECRET = 'secret';
 
 function createAccessToken(user, userId, clientId, scope, ttl){
 	return new Promise((resolve, reject)=>{
