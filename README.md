@@ -1,5 +1,9 @@
 ![moneypenny](https://upload.wikimedia.org/wikipedia/en/9/9b/Miss_Moneypenny_by_Lois_Maxwell.jpg)
+[![Circle CI](https://circleci.com/gh/blueflag/moneypenny/tree/master.svg?style=svg)](https://circleci.com/gh/blueflag/moneypenny/tree/master)
+
 # moneypenny - Authentication Service
+
+
 
 [![Coverage Status](https://coveralls.io/repos/blueflag/moneypenny/badge.svg?branch=test&service=github&t=KTAhQi)](https://coveralls.io/github/blueflag/moneypenny?branch=master)
 
