@@ -10,14 +10,6 @@ var routes = {
      */
     '/auth/local/login' : {
         post : loginAndRedirect
-    },
-    /**
-     * Returns the details of the logged in user.
-     */
-    '/local/details' : {
-        get : function(req,res,next){
-            return res.json(req.user);
-        }
     }
 }
 

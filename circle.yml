@@ -2,9 +2,19 @@ machine:
   environment:
     VERSION_NUM: $CIRCLE_PROJECT_REPONAME--`echo $CIRCLE_BRANCH | sed "s/\//_/g"`--$CIRCLE_BUILD_NUM
     PREVIOUS_VERSION_NUM: $CIRCLE_PROJECT_REPONAME--`echo $CIRCLE_BRANCH | sed "s/\//_/g"`--$CIRCLE_PREVIOUS_BUILD_NUM
+  node:
+    version: 4.1.0
   python:
     version: 2.7.9
   post:
+    # Issue with bcrypt not compiling
     - sudo apt-get install build-essential
+    - sudo apt-get install python-software-properties
+    #- sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+    - sudo apt-get update
+    - sudo apt-get install gcc-4.8 g++-4.8
+    - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 60 --slave /usr/bin/g++ g++ /usr/bin/g++-4.8
+    #Newer NPM
     - npm install -g npm@3.x.x
-    - rm -rf node_modules/auth-server
+    #Install auth server everytime
+    - npm uninstall auth-server

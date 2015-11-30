@@ -38,9 +38,9 @@ passport.deserializeUser(function(id, done) {
     });
 });
 
-
+var loginRedirectUrl = '/login.html';
 module.exports = {
-    loginRedirectUrl : '/login.html',
+    loginRedirectUrl: loginRedirectUrl,
     ensureAuthenticated: function(req, res, next){
         var authNotRequired;
         if(req.isAuthenticated()){
@@ -54,7 +54,7 @@ module.exports = {
             if(req.originalUrl && req.session){
                 req.session.returnTo = req.originalUrl;
             }
-            res.redirect(this.loginRedirectUrl);
+            res.redirect(loginRedirectUrl);
         }
     },
     loginAndRedirect: (loginRedirect, defaultRedirect, strategy) => (req,res,next) => {
