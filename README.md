@@ -1,6 +1,7 @@
 ![moneypenny](https://upload.wikimedia.org/wikipedia/en/9/9b/Miss_Moneypenny_by_Lois_Maxwell.jpg)
-<<<<<<< HEAD
 # moneypenny - Authentication Service
+
+[![Coverage Status](https://coveralls.io/repos/blueflag/moneypenny/badge.svg?branch=test&service=github&t=KTAhQi)](https://coveralls.io/github/blueflag/moneypenny?branch=master)
 
 Moneypenny acts as an authentication service that offers multiple authentication strategies to a backend service and sends a [JSON web token](http://jwt.io/)(JWT) encripted using a shared secret as a response.
 
@@ -80,7 +81,4 @@ A list of the oAuth tokens that have been sent to the services, these tokens are
 ###session_users
 
 Users logged into sessions on the server, This list contains both SAML and Local users, and is the user encoded in the JWT.
-=======
-# moneypenny [![Coverage Status](https://coveralls.io/repos/blueflag/moneypenny/badge.svg?branch=test&service=github&t=KTAhQi)](https://coveralls.io/github/blueflag/moneypenny?branch=master)
-Toyota Authentication Service
->>>>>>> b075c304e2e215df4dfba8010f289788fd1d0c7e
+
