@@ -22,25 +22,44 @@ var AUTH_HOST = 'localhost';
 
 
 var setupRoutes = function(app){
-    app.get(CALLBACK_URL, passport.authenticate(PROVIDER_NAME, { failureRedirect: '/login'}, function(req, res){
-        return res.json(req.user);
-    }));
+    app.get(CALLBACK_URL, passport.authenticate(PROVIDER_NAME, { failureRedirect: '/login'}), 
+        function(req, res, next){
+            //return next();
+            return res.json(req.user);
+        });
     app.get('/login', passport.authenticate(PROVIDER_NAME));
 };
 
-passport.use(PROVIDER_NAME, new OAuth2Strategy({
-        authorizationURL: util.format('http://%s:%d/oauth2/authorization', AUTH_HOST, AUTH_PORT),
-        callbackURL: util.format('http://%s:%d/auth/provider/callback', SERVER_HOST, SERVER_PORT),
-        tokenURL: util.format('http://%s:%d/auth/provider/callback', AUTH_HOST, AUTH_PORT),
-        clientID: CLIENT_ID,
-        clientSecret : CLIENT_SECRET
-    }, 
-    function(accessToken, refreshToken, profile, done ){
-        console.log('access token:', accessToken, ' refresh token:', refreshToken);
-        jwt.verify(accessToken, 'secret', function(err, user){
-            console.log('User Details :', user );
-            done(err, user);
-        });
+var checkAuthenticated = function(req,res, next){
+    if(req.isAuthenticated()){
+        return next();
+    } else {
+        return res.redirect('/login');
+    }
+}
+
+var showUserDetails = function(req, res, next){
+    return res.json(req.user);
+}
+
+passport.use(PROVIDER_NAME, 
+        new OAuth2Strategy({
+            authorizationURL: util.format('http://%s:%d/oauth2/authorization', AUTH_HOST, AUTH_PORT),
+            callbackURL: util.format('http://%s:%d/auth/provider/callback', SERVER_HOST, SERVER_PORT),
+            tokenURL: util.format('http://%s:%d/oauth2/token', AUTH_HOST, AUTH_PORT),
+            clientID: CLIENT_ID,
+            clientSecret : CLIENT_SECRET
+        }, 
+        function(accessToken, refreshToken, profile, done ){
+            console.log('access token:', accessToken, ' refresh token:', refreshToken,'profile', profile);
+            if(accessToken){
+                jwt.verify(accessToken, 'secret', function(err, user){
+                    console.log('User Details :', user );
+                    done(err, user);
+                });
+            } else {
+                done(new Error('No access token returned from server'));
+            }
     }
 ));
 
@@ -72,7 +91,7 @@ var config = {
     },
     httpsOnly: false,
     __dirname: __dirname,
-    routes_root_path: __dirname + './',
+    routes_root_path: __dirname + '/',
     services_root_path: __dirname + '/app/auth-server',
     static_root_path: __dirname + '/public',
     session: {
@@ -83,4 +102,15 @@ var config = {
     }
 }
 var elephas = require('elephas')(config);
+
+elephas.createServer({
+        beforeRoutes: function(done, app){
+            app.use(passport.initialize());
+            app.use(passport.session());
+            setupRoutes(app);
+            app.use(checkAuthenticated);
+            app.use(showUserDetails);
+            done();
+        }
+});
 
