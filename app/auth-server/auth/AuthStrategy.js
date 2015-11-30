@@ -40,6 +40,7 @@ passport.deserializeUser(function(id, done) {
 
 var loginRedirectUrl = '/login.html';
 module.exports = {
+    loginRedirectUrl: loginRedirectUrl,
     ensureAuthenticated: function(req, res, next){
         var authNotRequired;
         if(req.isAuthenticated()){
