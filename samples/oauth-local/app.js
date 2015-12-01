@@ -20,16 +20,20 @@ var SERVER_HOST = 'localhost';
 var AUTH_PORT = 3000;
 var AUTH_HOST = 'localhost'; 
 
-
+/**
+ * Setup routes required for oauth, login page and callback
+ */ 
 var setupRoutes = function(app){
     app.get(CALLBACK_URL, passport.authenticate(PROVIDER_NAME, { failureRedirect: '/login'}), 
         function(req, res, next){
-            //return next();
             return res.json(req.user);
         });
     app.get('/login', passport.authenticate(PROVIDER_NAME));
 };
 
+/**
+ * Redirect user to login if they are yet to login.
+ */ 
 var checkAuthenticated = function(req,res, next){
     if(req.isAuthenticated()){
         return next();
@@ -37,11 +41,16 @@ var checkAuthenticated = function(req,res, next){
         return res.redirect('/login');
     }
 }
-
+/**
+ * Render user as JSON once logged in.
+ */ 
 var showUserDetails = function(req, res, next){
     return res.json(req.user);
 }
-
+/*
+ * Set up Passports Auth2Stratergy with correct details.
+ *
+ */ 
 passport.use(PROVIDER_NAME, 
         new OAuth2Strategy({
             authorizationURL: util.format('http://%s:%d/oauth2/authorization', AUTH_HOST, AUTH_PORT),
@@ -53,6 +62,7 @@ passport.use(PROVIDER_NAME,
         function(accessToken, refreshToken, profile, done ){
             console.log('access token:', accessToken, ' refresh token:', refreshToken,'profile', profile);
             if(accessToken){
+                // Verify the accessToken using JWT to extract user.
                 jwt.verify(accessToken, 'secret', function(err, user){
                     console.log('User Details :', user );
                     done(err, user);
@@ -64,9 +74,8 @@ passport.use(PROVIDER_NAME,
 ));
 
 /**
- * Seralize user into memory
+ * Seralize user into memory.
  */
-
 passport.serializeUser(function(user, done){
     try{
         var id = shortid.generate();
@@ -76,7 +85,9 @@ passport.serializeUser(function(user, done){
         done(err);
     }
 });
-
+/**
+ * Deseralize user from memory.
+ */ 
 passport.deserializeUser(function(id, done){
     try{
         done(null, users[id]);
@@ -107,9 +118,18 @@ elephas.createServer({
         beforeRoutes: function(done, app){
             app.use(passport.initialize());
             app.use(passport.session());
+            //Add oauth routes
             setupRoutes(app);
+            //Check that user is authenticated
             app.use(checkAuthenticated);
+            //They are authenticated so just show their user details
             app.use(showUserDetails);
+            //Log people out on error, it's possibly because sessions are stored in memory
+            app.use(function(err, req, res, next) {
+                console.error(err.stack);
+                req.logout();
+                res.status(500).send(err);
+            });
             done();
         }
 });
