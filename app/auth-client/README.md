@@ -1,24 +1,24 @@
 
 #Options
 ###JWT
-`jwtSecret` _required_ secret used to decode and encode JWT.
+`jwtSecret` __required__ secret used to decode and encode JWT.
 
 ###Authentication Server Details
-`providerHost` _required_ web accessable host name for the location of the authentication server.
+`providerHost` __required__ web accessable host name for the location of the authentication server.
 
 `providerPort` _default:443_ web accessable port for the location of the authentication server.
 
 `proviaderName` _default:auth-server_ name given to the oAuth passport stratergy
 
 ###Service external details
-`serverHost` _required_ web accessable hostname of the service running the auth-client
+`serverHost` __required__ web accessable hostname of the service running the auth-client
 
 `serverPort` _default:443_ web accessable port of the service running the auth-client
 
 ##oAuth Details
-`oAuthClientSecret` _required_ shared secret setup in the authentication service for the service
+`oAuthClientSecret` __required__ shared secret setup in the authentication service for the service
 
-`oAuthClientID` _required_ client id that corresponds to this service on the authentication service
+`oAuthClientID` __required__ client id that corresponds to this service on the authentication service
 
 `authorizationURI` _default:/oauth2/authorization_ url on the authentication server where the authentication endpoint can be found.
 
