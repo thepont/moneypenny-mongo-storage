@@ -36,10 +36,9 @@ var setupRoutes = function(app){
 
 /**
  * Redirect user to login if they are yet to login
- *
- * Service Specific Logic.
  */ 
-var checkAuthenticated = function(req, res, next){
+
+var authenticated = function(req, res, next){
     if(req.isAuthenticated()){
         return next();
     } else {
@@ -50,11 +49,13 @@ var checkAuthenticated = function(req, res, next){
         }
     }
 }
+
 /**
  * Render user as JSON once logged in.
  *
  * Service Specific logic
- */ 
+ */
+
 var showUserDetails = function(req, res, next){
     return res.json(req.user);
 }
