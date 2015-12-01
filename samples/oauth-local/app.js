@@ -22,6 +22,8 @@ var AUTH_HOST = 'localhost';
 
 /**
  * Setup routes required for oauth, login page and callback
+ *
+ * Money Penny
  */ 
 var setupRoutes = function(app){
     app.get(CALLBACK_URL, passport.authenticate(PROVIDER_NAME, { failureRedirect: '/login'}), 
@@ -32,7 +34,9 @@ var setupRoutes = function(app){
 };
 
 /**
- * Redirect user to login if they are yet to login.
+ * Redirect user to login if they are yet to login
+ *
+ * Service Specific Logic.
  */ 
 var checkAuthenticated = function(req,res, next){
     if(req.isAuthenticated()){
@@ -43,6 +47,8 @@ var checkAuthenticated = function(req,res, next){
 }
 /**
  * Render user as JSON once logged in.
+ *
+ * Service Specific logic
  */ 
 var showUserDetails = function(req, res, next){
     return res.json(req.user);
@@ -50,6 +56,7 @@ var showUserDetails = function(req, res, next){
 /*
  * Set up Passports Auth2Stratergy with correct details.
  *
+ * MoneyPenny.
  */ 
 passport.use(PROVIDER_NAME, 
         new OAuth2Strategy({
@@ -60,11 +67,10 @@ passport.use(PROVIDER_NAME,
             clientSecret : CLIENT_SECRET
         }, 
         function(accessToken, refreshToken, profile, done ){
-            console.log('access token:', accessToken, ' refresh token:', refreshToken,'profile', profile);
             if(accessToken){
                 // Verify the accessToken using JWT to extract user.
                 jwt.verify(accessToken, 'secret', function(err, user){
-                    console.log('User Details :', user );
+                    user.token = accessToken;
                     done(err, user);
                 });
             } else {
@@ -78,19 +84,20 @@ passport.use(PROVIDER_NAME,
  */
 passport.serializeUser(function(user, done){
     try{
-        var id = shortid.generate();
-        users[id] = user;
-        done(null, id);
+        done(null, user.token);
     }catch (err){
         done(err);
     }
 });
 /**
  * Deseralize user from memory.
- */ 
+ */
 passport.deserializeUser(function(id, done){
     try{
-        done(null, users[id]);
+        jwt.verify(id, 'secret', function(err, user){
+            user.token = id;
+            done(null, user);
+        });
     }catch (err){
         done(err);
     }
@@ -127,7 +134,6 @@ elephas.createServer({
             //Log people out on error, it's possibly because sessions are stored in memory
             app.use(function(err, req, res, next) {
                 console.error(err.stack);
-                req.logout();
                 res.status(500).send(err);
             });
             done();
