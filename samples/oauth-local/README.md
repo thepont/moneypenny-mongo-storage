@@ -17,7 +17,7 @@ The following record, as well as a user will have to be added to the money penny
 
 ###local_users
 
-Add a user with the username: sample_user and password: production1 to the database.
+Add a user with the username: _sample_user_ and password: _production1_ to the database.
 
 ```
 {
