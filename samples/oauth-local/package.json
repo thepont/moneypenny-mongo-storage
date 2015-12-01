@@ -1,0 +1,15 @@
+{
+  "name": "oauth-local",
+  "version": "1.0.0",
+  "description": "Test application for auth-server",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "dependencies": {
+    "passport-oauth": "^1.0.0",
+    "session-file-store": "0.0.22",
+    "shortid": "^2.2.4"
+  }
+}
