@@ -1,6 +1,7 @@
 var passport = require('passport');
 var jwt = require('jsonwebtoken');
 var OAuth2Strategy = require('passport-oauth').OAuth2Strategy;
+var LocalAPIKeyStrategy = require('passport-localapikey').Strategy;
 var shortid = require('shortid');
 var util = require('util');
 var session = require('express-session');
@@ -38,11 +39,15 @@ var setupRoutes = function(app){
  *
  * Service Specific Logic.
  */ 
-var checkAuthenticated = function(req,res, next){
+var checkAuthenticated = function(req, res, next){
     if(req.isAuthenticated()){
         return next();
     } else {
-        return res.redirect('/login');
+        if (!req.query.apikey){
+            return res.redirect('/login');
+        } else {
+            return passport.authenticate(['localapikey'], { session: false })(req, res, next);
+        }
     }
 }
 /**
@@ -69,6 +74,7 @@ passport.use(PROVIDER_NAME,
         function(accessToken, refreshToken, profile, done ){
             if(accessToken){
                 // Verify the accessToken using JWT to extract user.
+                console.log(accessToken);
                 jwt.verify(accessToken, 'secret', function(err, user){
                     user.token = accessToken;
                     done(err, user);
@@ -78,6 +84,14 @@ passport.use(PROVIDER_NAME,
             }
     }
 ));
+
+passport.use(new LocalAPIKeyStrategy(
+            function(apikey, done){
+                jwt.verify(apikey, 'secret', function(err, user){
+                    user.token = apikey;
+                    done(null, user);
+                });
+            }));
 
 /**
  * Seralize user into memory.
