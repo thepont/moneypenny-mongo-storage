@@ -3,14 +3,10 @@ var FileStore = require('session-file-store')(session);
 var AuthClient = require('auth-client');
 
 var PROVIDER_NAME = 'auth-server';
-
-var CALLBACK_URL = '/auth/provider/callback';
-
 var CLIENT_ID = 'oAuthTest';
 var CLIENT_SECRET = 'production1';
 var SERVER_PORT = 3334;
 var SERVER_HOST = 'localhost';
-
 var AUTH_PORT = 3000;
 var AUTH_HOST = 'localhost'; 
 
@@ -50,7 +46,6 @@ elephas.createServer({
             authClient.initialize(app);
             app.use(authClient.checkAuthenticated)
             app.use(showUserDetails);
-            //Log people out on error, it's possibly because sessions are stored in memory
             app.use(function(err, req, res, next) {
                 console.error(err.stack);
                 res.status(500).send(err);
