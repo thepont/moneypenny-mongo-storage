@@ -17,6 +17,15 @@ var DEFAULT_SERVER_PORT = 443;
 
 
 
+var userFromJwt = function(jwtSecret){ 
+	return function(token, callback){
+		jwt.verify(token, jwtSecret, function(err, user){
+			user.token = token;
+			callback(err, user);
+		});
+	}
+}
+
 /***
  * options
 * 		* loginUrl - URL on the local service to direct people to for login.
@@ -27,7 +36,7 @@ var DEFAULT_SERVER_PORT = 443;
 * 		* 
  */
 
-module.export = function(options){
+module.exports = function(options){
 	
 	// Secret for JWTs
 	var jwtSecret = setOptionOrError('jwtSecret'); 
@@ -45,9 +54,9 @@ module.export = function(options){
 	var tokenURI = setOptionOrDefault('authorizationURI', DEFAULT_TOKEN_URI);
 	var callbackURI =  setOptionOrDefault('callbackURI', DEFAULT_CALLBACK_URI);
 	var loginUri = setOptionOrDefault('loginUri', LOGIN_URI);
-	
+
 	//APIKeyStrategy and extract users from JWT.
-	var apiKeyStrategy = new LocalAPIKeyStrategy(userFromJwt)
+	var apiKeyStrategy = new LocalAPIKeyStrategy(userFromJwt(jwtSecret))
 	
 	var apiKeyField = apiKeyStrategy._apiKeyField;
 	var apiKeyHeaderField = apiKeyStrategy._apiKeyHeader
@@ -63,12 +72,6 @@ module.export = function(options){
 		return options[name] || defaultOption;
 	}
 	
-	var userFromJwt = function(token, callback){
-		jwt.verify(token, jwtSecret, function(err, user){
-			user.token = token;
-			callback(err, user);
-		});
-	}
 	
 	var setupRoutes = function(app){
 		app.get(callbackURI, 
@@ -85,7 +88,7 @@ module.export = function(options){
 	 *
 	 * Use passport oAuth to connect to authentication server.
 	 */
-	passport.use(options.providerName || DEFAULT_PROVIDER_NAME,
+	passport.use(providerName,
 			new OAuth2Strategy({
 				authorizationURL: util.format('http://%s:%d%s', providerHost, providerPort, authorizationURI),
 				tokenURL: util.format('http://%s:%d%s', providerHost, providerPort, tokenURI),
@@ -96,7 +99,7 @@ module.export = function(options){
 			function(accessToken, refreshToken, profile, done ){
 				if(accessToken){
 					// Verify the accessToken using JWT to extract user.
-					userFromJwt(accessToken, done);
+					userFromJwt(jwtSecret)(accessToken, done);
 				} else {
 					done(new Error('No access token returned from server'));
 				}
@@ -124,7 +127,7 @@ module.export = function(options){
 	/*
 	 * Deserialize user by extracting it from JWT.
 	 */
-	passport.deserializeUser(userFromJwt);	
+	passport.deserializeUser(userFromJwt(jwtSecret));	
 	
 	this.checkAuthenticated = function(req, res, next){
 		if(req.isAuthenticated()){
@@ -139,7 +142,7 @@ module.export = function(options){
 		}
 	}
 	
-	this.attachExpress = function(app){
+	this.initialize = function(app){
 		app.use(passport.initialize());
 		app.use(passport.session());
 		setupRoutes(app);

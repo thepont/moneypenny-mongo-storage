@@ -8,9 +8,11 @@
   },
   "author": "",
   "dependencies": {
-    "passport-localapikey": "0.0.3",
-    "passport-oauth": "^1.0.0",
-    "session-file-store": "0.0.22",
-    "shortid": "^2.2.4"
+    "auth-client": "file:../../app/auth-client",
+    "elephas": "^0.3.11",
+    "express": "^4.13.3",
+    "express-session": "^1.12.1",
+    "lodash": "^3.10.1",
+    "session-file-store": "0.0.22"
   }
 }
