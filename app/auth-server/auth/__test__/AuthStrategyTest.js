@@ -159,6 +159,7 @@ describe('AuthStrategy', ()=>{
 				redirect :  sinon.stub().returns({})
 			}
 			authStrategy.ensureAuthenticated(req, res);
+			
 			res.redirect.calledWithMatch(authStrategy.loginRedirectUrl).should.be.true();
 		});
 		

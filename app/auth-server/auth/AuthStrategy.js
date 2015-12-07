@@ -1,17 +1,11 @@
-var MongoLocalStrategy = require('auth-server/auth/local/MongoLocalStrategy');
-var SamlStrategy = require('auth-server/auth/saml/SamlAuthStrategy');
-var sessionUserApiStore = require('auth-server/auth/session/SessionUserApiStore');
 var passport = require('passport');
 var logger = require('auth-server/util/logger');
-
-const NO_AUTH_REQUIRED = ['/login.html', '/auth/local/login', '/auth/saml/login/callback', '/auth/saml/login', '/oauth2/token'];
 
 const ERROR_NO_USER = 'User logged in but no session user found in database';
 const ERROR_SERIALIZING_USER = 'User logged in but unable to serialize into database';
 const ERROR_NO_SESSION = 'No session found user will not be returned to the correct url';
+const DEFAULT_REDIRECT = '/';
 
-passport.use(MongoLocalStrategy);
-passport.use(SamlStrategy);
 passport.serializeUser((user, done) => {
     sessionUserApiStore.save(user).then(user => {
         done(null, user._id);
@@ -42,38 +36,18 @@ var loginRedirectUrl = '/login.html';
 module.exports = {
     loginRedirectUrl: loginRedirectUrl,
     ensureAuthenticated: function(req, res, next){
-        var authNotRequired;
         if(req.isAuthenticated()){
             return next(null);
         }
-        authNotRequired = NO_AUTH_REQUIRED.find(p => req.path === p);
-        if (authNotRequired){
-            return next(null);
+        if(req.originalUrl && req.session){
+            req.session.returnTo = req.originalUrl;
         }
-        else {
-            if(req.originalUrl && req.session){
-                req.session.returnTo = req.originalUrl;
-            }
-            res.redirect(loginRedirectUrl);
-        }
+        res.redirect(loginRedirectUrl);
     },
-    loginAndRedirect: (loginRedirect, defaultRedirect, strategy) => (req,res,next) => {
-        passport.authenticate(strategy, (err,user,info) => {
-             if(err){
-                return next(err);
-            }
-            if(!user){
-                return res.redirect(loginRedirect); 
-            }
-            req.logIn(user, function(err) {
-                if(err){
-                    return next(err);
-                }
-                if( req.session && req.session.returnTo ){
-                    return res.redirect(req.session.returnTo);
-                }
-                return res.redirect(defaultRedirect);
-            });
-        })(req, res, next)          
+    loginAndRedirect: (req,res,next) => {
+        if( req.session && req.session.returnTo ){
+            return res.redirect(req.session.returnTo);
+        }
+        return res.redirect(DEFAULT_REDIRECT);         
     } 
 };
