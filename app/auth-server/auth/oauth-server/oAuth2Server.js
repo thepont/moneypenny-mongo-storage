@@ -6,13 +6,20 @@ const ERR_NO_STORAGE_PROVIDER = "No storage supplyer option supplied";
 
 var passport = require('passport');
 
+/**
+ * Provides methods for handing oAuth2.
+ * 
+ * @param {Options} options options to instansiate oAuth with
+ * @throws {Error} when no storage provider is specified in options.
+ */
+
 module.exports = function(options){
     if( !options.storageProvider )
     {
         throw new Error(ERR_NO_STORAGE_PROVIDER);
     }
     
-    var oAuth2RefreshTokenMongoStore = require('auth-server/auth/oauth-server/refresh-token/oAuth2RefreshTokenMongoStore')(options.storageProvider);
+    var oAuth2RefreshTokenStore = require('auth-server/auth/oauth-server/refresh-token/oAuth2RefreshTokenStore')(options.storageProvider);
     var oAuth2TokenStore = require('auth-server/auth/oauth-server/token/oAuth2TokenStore')(options.storageProvider, 'secret');
     var oAuth2ClientStore = require('auth-server/auth/oauth-server/client/oAuth2ClientStore')(options.storageProvider);
     var oAuth2UserStore = require('auth-server/auth/oauth-server/user/oAuth2UserStore')(options.storageProvider);
@@ -25,13 +32,13 @@ module.exports = function(options){
     oauth2.model.client.checkSecret = oAuth2ClientStore.checkSecret; 
     
     // Refresh token
-    oauth2.model.refreshToken.getUserId = oAuth2RefreshTokenMongoStore.getUserId;
-    oauth2.model.refreshToken.getClientId = oAuth2RefreshTokenMongoStore.getClientId;
-    oauth2.model.refreshToken.getScope = oAuth2RefreshTokenMongoStore.getScope;
-    oauth2.model.refreshToken.fetchByToken = oAuth2RefreshTokenMongoStore.fetchByToken;
-    oauth2.model.refreshToken.removeByUserIdClientId = oAuth2RefreshTokenMongoStore.removeByUserIdClientId;
-    oauth2.model.refreshToken.removeByRefreshToken = oAuth2RefreshTokenMongoStore.removeByRefreshToken;
-    oauth2.model.refreshToken.create = oAuth2RefreshTokenMongoStore.create;
+    oauth2.model.refreshToken.getUserId = oAuth2RefreshTokenStore.getUserId;
+    oauth2.model.refreshToken.getClientId = oAuth2RefreshTokenStore.getClientId;
+    oauth2.model.refreshToken.getScope = oAuth2RefreshTokenStore.getScope;
+    oauth2.model.refreshToken.fetchByToken = oAuth2RefreshTokenStore.fetchByToken;
+    oauth2.model.refreshToken.removeByUserIdClientId = oAuth2RefreshTokenStore.removeByUserIdClientId;
+    oauth2.model.refreshToken.removeByRefreshToken = oAuth2RefreshTokenStore.removeByRefreshToken;
+    oauth2.model.refreshToken.create = oAuth2RefreshTokenStore.create;
     
     // Access token
     oauth2.model.accessToken.getToken = oAuth2TokenStore.getToken;
