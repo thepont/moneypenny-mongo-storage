@@ -17,4 +17,4 @@ machine:
     #Newer NPM
     - npm install -g npm@3.x.x
     #Install auth server everytime
-    - npm uninstall auth-server
+    - npm uninstall moneypenny-server

@@ -35,7 +35,7 @@ module.exports = function(grunt){
                 options : {
                     dryRun: false,
                     coverageFolder: 'coverage',
-                    root: './app/auth-server',
+                    root: './app/moneypenny-server',
                     excludes: ['**/__test__/*.js'],
                     print: 'detail',
                     //scriptPath: require.resolve('babel-istanbul'),

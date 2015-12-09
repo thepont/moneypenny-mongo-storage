@@ -1,4 +1,4 @@
-var sessionUserStore = require('auth-server/auth/session/SessionUserApiStore');
+var sessionUserStore = require('moneypenny-server/auth/session/SessionUserApiStore');
 
 module.exports = {
     

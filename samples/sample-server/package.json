@@ -11,7 +11,7 @@
     "elephas": "^0.3.12",
     "express": "^4.13.3",
     "lodash": "^3.10.1",
-    "auth-server": "file:../../app/auth-server",
-    "mongo-auth-storage": "file:../../app/mongo-auth-storage"
+    "moneypenny-server": "file:../../app/moneypenny-server",
+    "moneypenny-mongo-storage": "file:../../app/moneypenny-mongo-storage"
   }
 }

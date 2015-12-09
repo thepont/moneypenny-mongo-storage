@@ -1,14 +1,14 @@
 var proxyquire = require('proxyquire');
 var sinon = require('sinon');
 var should = require('should');
-var PromiseTest = require('auth-server/util/test/PromiseTest');
+var PromiseTest = require('moneypenny-server/util/test/PromiseTest');
 
 describe('LocalUserAPIStore', () => {
 	describe('getUser()', ()=> {
 		PromiseTest.itReturnsAPromise(require('../LocalUserAPIStore').getUser);
 		it('Resolves with the user from the database', (done)=>{
 			var localUserAPIStore = proxyquire('../LocalUserAPIStore',{
-				'auth-server/services/collection' : sinon.stub().returns({
+				'moneypenny-server/services/collection' : sinon.stub().returns({
 					findOne: sinon.stub().returns(Promise.resolve('test'))
 				})
 			});
@@ -22,7 +22,7 @@ describe('LocalUserAPIStore', () => {
 		PromiseTest.itReturnsAPromise(require('../LocalUserAPIStore').getUserHash);
 		it('Gets the users hash from the database', (done)=>{
 			var localUserAPIStore = proxyquire('../LocalUserAPIStore',{
-				'auth-server/services/collection' : sinon.stub().returns({
+				'moneypenny-server/services/collection' : sinon.stub().returns({
 					findOne: sinon.stub().returns(Promise.resolve('test'))
 				})
 			});

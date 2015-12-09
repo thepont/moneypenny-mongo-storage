@@ -8,7 +8,7 @@ describe('local--routes', () => {
 			it('Calls loginAndRedirect to login the user and redirect', () => {
 				var loginAndRedirect = sinon.stub();
 				var localRoutes = proxyquire('../local--routes', {
-					'auth-server/auth/AuthStrategy' : {
+					'moneypenny-server/auth/AuthStrategy' : {
 						loginAndRedirect : () => loginAndRedirect
 					}
 				});

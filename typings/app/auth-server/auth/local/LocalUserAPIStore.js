@@ -1,7 +1,7 @@
-var db = require('auth-server/services/db');
-var Collection = require('auth-server/services/collection');
+var db = require('moneypenny-server/services/db');
+var Collection = require('moneypenny-server/services/collection');
 var LocalUserQuery = require('./LocalUserQuery');
-var PasswordCrypto = require('auth-server/util/PasswordCrypto');
+var PasswordCrypto = require('moneypenny-server/util/PasswordCrypto');
 var localUsersCollection = new Collection(db.local_users);
 
 module.exports = {

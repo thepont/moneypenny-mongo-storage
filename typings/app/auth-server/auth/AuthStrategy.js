@@ -1,8 +1,8 @@
-var MongoLocalStrategy = require('auth-server/auth/local/MongoLocalStrategy');
-var SamlStrategy = require('auth-server/auth/saml/SamlAuthStrategy');
-var sessionUserApiStore = require('auth-server/auth/session/SessionUserApiStore');
+var MongoLocalStrategy = require('moneypenny-server/auth/local/MongoLocalStrategy');
+var SamlStrategy = require('moneypenny-server/auth/saml/SamlAuthStrategy');
+var sessionUserApiStore = require('moneypenny-server/auth/session/SessionUserApiStore');
 var passport = require('passport');
-var logger = require('auth-server/util/logger');
+var logger = require('moneypenny-server/util/logger');
 
 const NO_AUTH_REQUIRED = ['/login.html', '/auth/local/login', '/auth/saml/login/callback', '/auth/saml/login'];
 

@@ -9,11 +9,11 @@ var save = sinon.stub().returns(COLLECTION_SAVE_RETURN);
 var findOne = sinon.stub().returns(COLLECTION_FINDONE_RETURN);
 
 var SessonUserApiStore = proxyquire('../SessionUserApiStore', {
-	'auth-server/services/collection' : sinon.stub().returns({
+	'moneypenny-server/services/collection' : sinon.stub().returns({
 		save: save,
 		findOne: findOne
 	}),
-	'auth-server/auth/session/SessionUserQuery' : sinon.stub().returns({
+	'moneypenny-server/auth/session/SessionUserQuery' : sinon.stub().returns({
 		idEquals : 	sinon.stub().returns({})
 	})
 });

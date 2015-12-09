@@ -9,7 +9,7 @@ describe('MongoLocalStrategy', () => {
 		});
 		it('It returns an error if the password is incorrect', () =>{
 			var mongoLocalStrategy = proxyquire('../MongoLocalStrategy',{
-				'auth-server/auth/local/LocalUserAPIStore' : {
+				'moneypenny-server/auth/local/LocalUserAPIStore' : {
 					getUserHash: sinon.stub().returns(Promise.resolve({}))
 				},
 				'passport-local' : {
@@ -17,7 +17,7 @@ describe('MongoLocalStrategy', () => {
 						this.authenticate = authenticate;
 					}
 				},
-				'auth-server/util/PasswordCrypto' : {
+				'moneypenny-server/util/PasswordCrypto' : {
 					
 				}
 			});
@@ -36,7 +36,7 @@ describe('MongoLocalStrategy', () => {
 		});
 		it('It returns an error if it fails to get the password hash', (done) =>{
 			var mongoLocalStrategy = proxyquire('../MongoLocalStrategy',{
-				'auth-server/auth/local/LocalUserAPIStore' : {
+				'moneypenny-server/auth/local/LocalUserAPIStore' : {
 					getUserHash: sinon.stub().returns(Promise.reject('test'))
 				},
 				'passport-local' : {
@@ -58,7 +58,7 @@ describe('MongoLocalStrategy', () => {
 		});
 		it('It returns a message and false if it fails to get user', () =>{
 			var mongoLocalStrategy = proxyquire('../MongoLocalStrategy',{
-				'auth-server/auth/local/LocalUserAPIStore' : {
+				'moneypenny-server/auth/local/LocalUserAPIStore' : {
 					getUserHash: sinon.stub().returns(Promise.resolve())
 				},
 				'passport-local' : {
@@ -88,7 +88,7 @@ describe('MongoLocalStrategy', () => {
 			} 
 			
 			var mongoLocalStrategy = proxyquire('../MongoLocalStrategy',{
-				'auth-server/auth/local/LocalUserAPIStore' : {
+				'moneypenny-server/auth/local/LocalUserAPIStore' : {
 					getUserHash: sinon.stub().returns(Promise.resolve({})),
 					getUser: sinon.stub().returns(Promise.resolve({returnedUser}))
 				},
@@ -97,7 +97,7 @@ describe('MongoLocalStrategy', () => {
 						this.authenticate = authenticate;
 					}
 				},
-				'auth-server/util/PasswordCrypto' : {
+				'moneypenny-server/util/PasswordCrypto' : {
 					checkPassword : sinon.stub().returns(Promise.resolve({}))
 				}
 			});

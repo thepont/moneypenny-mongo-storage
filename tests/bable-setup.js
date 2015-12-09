@@ -1,9 +1,9 @@
 var winston = require('winston');
 require("babel/register")({
     //highlightCode: false,
-    ignore: /node_modules\/(?!auth-server).*/
+    ignore: /node_modules\/(?!moneypenny-server).*/
  });
 
 // Disable logging while testing.
-var logger = require('auth-server/util/logger');
+var logger = require('moneypenny-server/util/logger');
 logger.remove(winston.transports.Console);

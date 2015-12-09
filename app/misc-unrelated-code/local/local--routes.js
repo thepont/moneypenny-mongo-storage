@@ -1,7 +1,7 @@
 var passport = require('passport');
 
-console.log(require('auth-server/auth/AuthStrategy'))
-var loginAndRedirect = require('auth-server/auth/AuthStrategy').loginAndRedirect('/local/login','/local/details','local');
+console.log(require('moneypenny-server/auth/AuthStrategy'))
+var loginAndRedirect = require('moneypenny-server/auth/AuthStrategy').loginAndRedirect('/local/login','/local/details','local');
 
 
 var routes = {

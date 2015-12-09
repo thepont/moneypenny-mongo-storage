@@ -1,4 +1,4 @@
-var loginAndRedirect = require('auth-server/auth/AuthStrategy').loginAndRedirect('/local/login','/local/details','saml');
+var loginAndRedirect = require('moneypenny-server/auth/AuthStrategy').loginAndRedirect('/local/login','/local/details','saml');
 
 var routes = {
     '/auth/saml/login/callback' : {

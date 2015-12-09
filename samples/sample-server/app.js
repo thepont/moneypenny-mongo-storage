@@ -4,28 +4,26 @@ var logger = require('winston');
 var MONGO_DB_HOST = 'mongo.dev.bigdatr.xyz';
 var MONGO_DB = 'toy_auth_manager_sample';
 
+/*
+ * Static username and password for test
+ * login as 'jsmith' password 'password' 
+ */
 var USERNAME = 'jsmith';
 var PASSWORD = 'password';
 
-var user = {
+
+//This will be serialized and sent to the client.
+var USER = {
     username : 'jsmith',
     haircolour: 'brown'
 };
-
-
-//require('es6-promise').polyfill();
-require("babel/register")({
-    highlightCode: false,
-    ignore: /node_modules\/(?!auth-server)|node-oauth20-provider/    
- });
  
-
 var session = require('express-session');
 var FileStore = require('session-file-store')(session);
 var LocalStrategy = require('passport-local').Strategy;
 var passport = require('passport');
 
-// Mongo DB connection for mongo-auth-storage.
+// Mongo DB connection for moneypenny-mongo-storage.
 var mongodb = require('mongodb');
 var mongoServer = new mongodb.Server(MONGO_DB_HOST, 27017, {});
 
@@ -34,12 +32,13 @@ var db = new mongodb.Db(MONGO_DB, mongoServer, {
     readPreference: mongodb.ReadPreference.SECONDARY_PREFERRED
 });
 db.open(function(err){
-    if(err)
+    if(err){
         logger.error(err);
+    }
 });
 
 // Mongo Auth Storage Configuration
-var mongoAuthStorage = require('mongo-auth-storage')({
+var mongoAuthStorage = require('moneypenny-mongo-storage')({
     db: db
 })
 
@@ -54,24 +53,20 @@ var mongoAuthStorage = require('mongo-auth-storage')({
  */
 var checkUsernamePassword = function(username, password, done){
     if (username === USERNAME && password == PASSWORD){
-        return done(null, user);
+        return done(null, USER);
     }
     else {
         return done(null, false, 'username and/or password incorrect')
     }
 }
 
-
-
-var authServer = require('auth-server')
-console.log(authServer);
-authServer = authServer({
+var moneypennyServer = require('moneypenny-server')({
     storageProvider: mongoAuthStorage,
     loginUrl: '/login.html'
 });
 
-passport.serializeUser(authServer.serializeUser)
-passport.deserializeUser(authServer.deserializeUser)
+passport.serializeUser(moneypennyServer.serializeUser)
+passport.deserializeUser(moneypennyServer.deserializeUser)
 
 var config = {
     server: {
@@ -98,12 +93,11 @@ elephas.createServer({
         app.use(passport.initialize());
         app.use(passport.session());
         passport.use(new LocalStrategy(checkUsernamePassword));
-        app.post('/login', passport.authenticate('local'), authServer.loginAndRedirect);
+        app.post('/login', passport.authenticate('local'), moneypennyServer.loginAndRedirect);
         done();
     },
     afterRoutes: function(done,app){
-        // app.use(authServer.ensureAuthenticated);
-        authServer.initialize(app);
+        moneypennyServer.initialize(app);
         done();
     }
 });

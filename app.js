@@ -3,7 +3,7 @@ require('dotenv').load();
 //require('es6-promise').polyfill();
 require("babel/register")({
     highlightCode: false,
-    ignore: /node_modules\/(?!auth-server)|node-oauth20-provider/    
+    ignore: /node_modules\/(?!moneypenny-server)|node-oauth20-provider/    
  });
 var session = require('express-session');
 var FileStore = require('session-file-store')(session);
@@ -18,8 +18,8 @@ var config = {
     },
     httpsOnly: false,
     __dirname: __dirname,
-    routes_root_path: __dirname + '/app/auth-server',
-    services_root_path: __dirname + '/app/auth-server',
+    routes_root_path: __dirname + '/app/moneypenny-server',
+    services_root_path: __dirname + '/app/moneypenny-server',
     static_root_path: __dirname + '/public',
     session: {
         store: new FileStore({}),
@@ -28,8 +28,8 @@ var config = {
         secret: 'UvIx0ANvWDg5U6P3AzI2lv4IaGl8jV3i'
     }
 };
-var authStrategy = require('auth-server/auth/AuthStrategy');
-var oAuth2Server = require('auth-server/auth/oauth-server/oAuth2Server');
+var authStrategy = require('moneypenny-server/auth/AuthStrategy');
+var oAuth2Server = require('moneypenny-server/auth/oauth-server/oAuth2Server');
 var elephas = require('elephas')(config);
 elephas.createServer({
     beforeMiddleware: function(done, app){

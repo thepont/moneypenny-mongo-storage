@@ -26,8 +26,8 @@ var config = {
         secret: 'UvIx0ANvWDg5U6P3AzI2lv4IaGl8jV3i'
     }
 };
-var authStrategy = require('auth-server/auth/AuthStrategy');
-var oAuth2Server = require('auth-server/auth/oauth-server/oAuth2Server');
+var authStrategy = require('moneypenny-server/auth/AuthStrategy');
+var oAuth2Server = require('moneypenny-server/auth/oauth-server/oAuth2Server');
 var elephas = require('elephas')(config);
 elephas.createServer({
     beforeMiddleware: function(done, app){

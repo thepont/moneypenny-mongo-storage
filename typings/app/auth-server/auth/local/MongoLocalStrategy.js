@@ -1,7 +1,7 @@
 var LocalStrategy = require('passport-local').Strategy;
-var LocalUserStore = require('auth-server/auth/local/LocalUserAPIStore');
-var PasswordCrypto = require('auth-server/util/PasswordCrypto');
-var logger = require('auth-server/util/logger');
+var LocalUserStore = require('moneypenny-server/auth/local/LocalUserAPIStore');
+var PasswordCrypto = require('moneypenny-server/util/PasswordCrypto');
+var logger = require('moneypenny-server/util/logger');
 
 const MESSAGE_INCORRECT_PASSWORD = 'Username or password incorrect';
 

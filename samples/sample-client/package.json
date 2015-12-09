@@ -1,14 +1,14 @@
 {
   "name": "oauth-local",
   "version": "1.0.0",
-  "description": "Test application for auth-server",
+  "description": "Test application for moneypenny-server",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "dependencies": {
-    "auth-client": "file:../../app/auth-client",
+    "moneypenny-client": "file:../../app/moneypenny-client",
     "elephas": "^0.3.11",
     "express": "^4.13.3",
     "express-session": "^1.12.1",

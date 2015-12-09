@@ -1,5 +1,6 @@
 require("babel/register")({
-    highlightCode: false  
+    highlightCode: false,
+    
  });
 
 const ERR_DB_NOT_SET = 'options.db is not set';
@@ -22,10 +23,10 @@ module.exports = function(options){
     var oauth_code = options.db.collection(options.codeCollection || COLLECTION_CODE);
     
     return {
-        clientStore: require('stores/ClientStore')(oauth_client),
-        codeStore: require('stores/CodeStore')(oauth_code),
-        refreshTokenStore: require('stores/RefreshTokenStore')(oauth_refresh_token),
-        tokenStore: require('stores/TokenStore')(oauth_token),
-        userStore: require('stores/UserStore')(oauth_users)
+        clientStore: require('./stores/ClientStore')(oauth_client),
+        codeStore: require('./stores/CodeStore')(oauth_code),
+        refreshTokenStore: require('./stores/RefreshTokenStore')(oauth_refresh_token),
+        tokenStore: require('./stores/TokenStore')(oauth_token),
+        userStore: require('./stores/UserStore')(oauth_users)
     }   		
-}
+} 
