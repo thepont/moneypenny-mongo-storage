@@ -33,7 +33,6 @@ var db = new mongodb.Db(MONGO_DB, mongoServer, {
     w: 1,
     readPreference: mongodb.ReadPreference.SECONDARY_PREFERRED
 });
-
 db.open(function(err){
     if(err)
         logger.error(err);
@@ -103,7 +102,7 @@ elephas.createServer({
         done();
     },
     afterRoutes: function(done,app){
-        app.use(authServer.ensureAuthenticated);
+        // app.use(authServer.ensureAuthenticated);
         authServer.initialize(app);
         done();
     }

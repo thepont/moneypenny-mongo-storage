@@ -11,7 +11,7 @@ module.exports = function(collection){
         */ 
         
         save: function(user){
-        return userCollection.save(user); 
+            return userCollection.save(user); 
         },
         
         /**

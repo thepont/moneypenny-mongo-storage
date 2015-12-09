@@ -1,3 +1,5 @@
+
+
 const AUTHORIZATION_ENDPOINT =  '/oauth2/authorization';
 const TOKEN_ENDPOINT = '/oauth2/token';
 
@@ -14,6 +16,27 @@ const DEFAULT_REDIRECT = '/';
  * @property {String} loginUrl url to redirect to for login.
  * @property {StorageProvider} storageProvider storage provider to use to store autentication details.
  */
+
+
+/**
+* Middlewere for checking that people using the service are authenticated.
+* 
+* Adds req.sesson.returnTo, the url to redirect the user to after login.
+* 
+* @param {request} req express request to check authenticated
+* @param {response} res express response related to this request
+* @param {function()} next callback to next middleware to handle request.
+*/
+
+var ensureAuthenticated = (options) => (req, res, next) => {
+	if(req.isAuthenticated()){
+		return next(null);
+	}
+	if(req.originalUrl && req.session){
+		req.session.returnTo = req.originalUrl;
+	}
+	res.redirect(options.loginUrl);
+};
 
 /**
  * Create a moneypenny
@@ -36,8 +59,11 @@ module.exports = (options) => {
 		
 		initialize: (app) => {
 			app.use(oAuth2Server.inject());
-			app.use(AUTHORIZATION_ENDPOINT, oAuth2Server.controller.authorization)
 			app.use(TOKEN_ENDPOINT, oAuth2Server.controller.token)
+			app.use(ensureAuthenticated(options));
+			app.use(AUTHORIZATION_ENDPOINT, oAuth2Server.controller.authorization)
+			
+		
 		},
 		
 		/**
@@ -101,15 +127,7 @@ module.exports = (options) => {
 		 * @param {function} next callback to next middleware to handle request.
 		 */
 		
-		ensureAuthenticated: (req, res, next) => {
-            if(req.isAuthenticated()){
-                return next(null);
-            }
-            if(req.originalUrl && req.session){
-                req.session.returnTo = req.originalUrl;
-            }
-            res.redirect(options.loginUrl);
-        },
+		ensureAuthenticated: ensureAuthenticated(options),
 		 
 		/**
 		 * Helper method for login, this method can be used once a login is established from a passport strategy
