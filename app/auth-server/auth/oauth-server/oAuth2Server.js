@@ -1,6 +1,5 @@
 var OAuth2Lib = require('oauth20-provider');
 var oauth2 = new OAuth2Lib({log: {level: 2}});
-var oauthServerRoutes = require('./oauth-server--routes')
 
 const ERR_NO_STORAGE_PROVIDER = "No storage supplyer option supplied";
 

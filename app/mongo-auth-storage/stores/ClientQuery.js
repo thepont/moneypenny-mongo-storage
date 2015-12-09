@@ -3,10 +3,7 @@ function oAuth2ClientQuery(){
 		query : {},
 		projection:{},
 		idEquals : function(id) {
-			this.query = {
-				...this.query,
-				_id : id
-			}
+			this.query._id = id;
 			return this;
 		}
     }

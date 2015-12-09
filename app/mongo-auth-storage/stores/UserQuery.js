@@ -5,10 +5,7 @@ function SessionUsersQuery(){
         query : {},
         projection : {},
         idEquals: function(id){
-            this.query = {
-                ...this.query,
-                _id : new ObjectID(id) 
-            }
+            this.query._id = new ObjectID(id);
             return this;
         }
     }

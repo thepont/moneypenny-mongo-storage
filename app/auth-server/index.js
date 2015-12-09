@@ -7,6 +7,7 @@ const ERROR_NO_SESSION = 'No session found user will not be returned to the corr
 
 const DEFAULT_REDIRECT = '/';
 
+
 /**
  * @typedef {Object} Options
  * @property {String} redirectUrl default redirect url to use if no previous url is found.
@@ -26,12 +27,15 @@ module.exports = (options) => {
 	var redirectUrl = options.redirectUrl || DEFAULT_REDIRECT;
 	
 	return {
+		
 		/**
 		 * Initalize moneypenny.
 		 * adds oauth authentication endpoints to express app
 		 * @param expressapp app the express app that this will run on.
 		 */
+		
 		initialize: (app) => {
+			app.use(oAuth2Server.inject());
 			app.use(AUTHORIZATION_ENDPOINT, oAuth2Server.controller.authorization)
 			app.use(TOKEN_ENDPOINT, oAuth2Server.controller.token)
 		},
@@ -105,7 +109,8 @@ module.exports = (options) => {
                 req.session.returnTo = req.originalUrl;
             }
             res.redirect(options.loginUrl);
-        }, 
+        },
+		 
 		/**
 		 * Helper method for login, this method can be used once a login is established from a passport strategy
 		 * 
@@ -115,6 +120,7 @@ module.exports = (options) => {
 		 * @param {response} res express response related to this request
 		 * @param {function} next callback to next middleware to handle request.
 		 */
+		
 		loginAndRedirect: (req,res,next) => {
             if( req.session && req.session.returnTo ){
                 return res.redirect(req.session.returnTo);

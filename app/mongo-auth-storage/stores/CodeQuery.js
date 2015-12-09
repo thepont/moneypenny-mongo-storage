@@ -3,10 +3,7 @@ function oAuth2CodeQuery(){
         query: {},
         projection : {},
         codeEquals : function(code){
-            this.query =  {
-                ...this.query,
-                code : code
-            }
+            this.query.code = code;
             return this;
         }
     }
