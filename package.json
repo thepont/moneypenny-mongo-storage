@@ -5,6 +5,7 @@
   "main": "app.js",
   "dependencies": {
     "moneypenny-server": "file:./app/moneypenny-server",
+    "moneypenny-mongo-storage": "file:./app/moneypenny-mongo-storage",
     "babel": "^5.8.23",
     "bcrypt": "^0.8.5",
     "dotenv": "^1.2.0",
@@ -25,6 +26,7 @@
     "winston": "^2.1.0"
   },
   "devDependencies": {
+    "test-utils" : "file:./app/test-utils",
     "babel-istanbul": "^0.4.1",
     "chai": "^3.4.0",
     "coveralls": "^2.11.4",

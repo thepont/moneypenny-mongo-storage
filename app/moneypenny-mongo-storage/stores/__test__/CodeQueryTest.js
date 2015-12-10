@@ -1,6 +1,7 @@
 
 var OAuth2CodeQuery = require('../CodeQuery');
-var QueryTests = require('moneypenny-server/util/test/QueryTests')
+var QueryTests = require('moneypenny-mongo-storage/util/test/QueryTests');
+
 
 describe('CodeQuery()', () => {   
     QueryTests.itsAValidQueryObject(OAuth2CodeQuery);

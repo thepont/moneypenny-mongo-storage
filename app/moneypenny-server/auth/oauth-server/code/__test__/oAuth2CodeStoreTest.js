@@ -1,8 +1,9 @@
 
-var oAuthCodeStore = require('../oAuth2CodeStore');
+var oAuthCodeStore = require('../oAuth2CodeStore')({codeStore : {}}, '');
 var proxyquire = require('proxyquire');
 var sinon = require('sinon');
 var should = require('should');
+var jwt = require('jsonwebtoken');
 
 
 describe('oAuthCodeStore', () => {   
@@ -25,37 +26,27 @@ describe('oAuthCodeStore', () => {
 	});
 	
 	describe('create()', () => {
-			it('Creates a new oAuth2 code with correct properties and saves in the DB', (done) =>{
-				var collectionSave = sinon.stub().returns(Promise.resolve({}));
-				var oAuthCodeStore = proxyquire('../oAuth2CodeStore', {
-					'moneypenny-server/services/collection' : sinon.stub().returns({
-						save: collectionSave
-					})
-				});
-				 
-				oAuthCodeStore.create('userid', 'client', 'ALL', 10000, (error, saved)=>{
-					try{
-						collectionSave.args[0][0].should.have.property('userId', 'userid');
-						collectionSave.args[0][0].should.have.property('clientId', 'client');						
-						collectionSave.args[0][0].should.have.property('scope', 'ALL');
-						collectionSave.args[0][0].should.have.property('ttl', 10000);
-						done();
-					} catch (err){
-						done(err);
-					}
-				});
-			});
-			
-		
 		it('It calls back with a token', (done) => {
-			var oAuthCodeStore = proxyquire('../oAuth2CodeStore', {
-				'moneypenny-server/services/collection' : sinon.stub().returns({
-					save: sinon.stub().returns(Promise.resolve({}))
-				})
-			});
+			var fakeStorageProvide =  {
+				codeStore : {
+					save :  (userid, clientid, scope, ttl) => Promise.resolve({
+						userId: userid,
+						clientId: clientid,
+						scope: scope,
+						ttl: ttl
+					})
+				}
+			}
+			
+			var oAuthCodeStore = require('../oAuth2CodeStore')(fakeStorageProvide, 'secret');
+				
 			oAuthCodeStore.create('userid', 'client', 'ALL', 10000, (error, saved)=>{
 				try{
-					saved.should.be.type('string');
+					var decoded = jwt.decode(saved, 'secret');
+					decoded.should.have.property('userId', 'userid');
+					decoded.should.have.property('clientId', 'client');	
+					decoded.should.have.property('scope', 'ALL');
+					decoded.should.have.property('ttl', 10000);
 					done();
 				} catch (err){
 					done(err);
@@ -64,11 +55,12 @@ describe('oAuthCodeStore', () => {
 		});
 		
 		it('Calls callback with error if an error occurs', (done) =>{
-			var oAuthCodeStore = proxyquire('../oAuth2CodeStore', {
-				'moneypenny-server/services/collection' : sinon.stub().returns({
-					save: sinon.stub().returns(Promise.reject({}))
-				})
-			});
+			var fakeStorageProvide =  {
+				codeStore : {
+					save :  (userid, clientid, scope, ttl) => Promise.reject('err')
+				}
+			}
+			var oAuthCodeStore = require('../oAuth2CodeStore')(fakeStorageProvide, 'secret');
 			oAuthCodeStore.create('userid', 'client', 'ALL', 10000, (error, saved)=>{
 				try{
 					should.exist(error);
@@ -82,16 +74,18 @@ describe('oAuthCodeStore', () => {
 	
 	describe('fetchByCode()', () => {
 		it('Returns oAuth code details from database if found', (done) =>{
-			var oAuthCodeStore = proxyquire('../oAuth2CodeStore', {
-				'moneypenny-server/services/collection' : sinon.stub().returns({
-					findOne: sinon.stub().returns(Promise.resolve({
+			var fakeStorageProvide =  {
+				codeStore : {
+					fetchByCode :  (code) => Promise.resolve({
 						userId: 'userId',
-            			clientId: 'clientId',
-            			scope: 'scope',
-            			ttl: 'ttl'
-					}))
-				})
-			});
+						clientId: 'clientId',
+						scope: 'scope',
+						ttl: 'ttl'
+					})
+				}
+			}
+			
+			var oAuthCodeStore = require('../oAuth2CodeStore')(fakeStorageProvide, 'secret');
 			oAuthCodeStore.fetchByCode('testcode', (err, item)=>{
 				try{
 					item.should.have.property('userId', 'userId');
@@ -107,11 +101,12 @@ describe('oAuthCodeStore', () => {
 		});
 		
 		it('Calls callback with error if an error occurs', (done) =>{
-			var oAuthCodeStore = proxyquire('../oAuth2CodeStore', {
-				'moneypenny-server/services/collection' : sinon.stub().returns({
-					findOne: sinon.stub().returns(Promise.reject({}))
-				})
-			});
+			var fakeStorageProvide =  {
+				codeStore : {
+					fetchByCode : (code) => Promise.reject('err')
+				}
+			}
+			var oAuthCodeStore = require('../oAuth2CodeStore')(fakeStorageProvide, 'secret');
 			oAuthCodeStore.fetchByCode('testcode', (error, saved)=>{
 				try{
 					should.exist(error);
@@ -123,17 +118,19 @@ describe('oAuthCodeStore', () => {
 		});
 	});
 	
-	describe('removeByCode()', () => {
-		var collectionRemove = sinon.stub().returns(Promise.resolve({}));
+	describe('removeByCode()', (done) => {
+		var remove = sinon.stub().returns(Promise.resolve({}));
 		it('Removes oAuth token whos code matches code', () =>{
-			var oAuthCodeStore = proxyquire('../oAuth2CodeStore', {
-				'moneypenny-server/services/collection' : sinon.stub().returns({
-					remove: collectionRemove
-				})
-			});
+			var fakeStorageProvide =  {
+				codeStore : {
+					removeByCode : remove
+				}
+			}
+			var oAuthCodeStore = require('../oAuth2CodeStore')(fakeStorageProvide, 'secret');
+			
 			oAuthCodeStore.removeByCode('code', (error, saved)=>{
 				try{
-					collectionRemove.called.should.be.true;
+					remove.called.should.be.true;
 					should.not.exist(error);
 					done();
 				} catch (err){
@@ -143,11 +140,12 @@ describe('oAuthCodeStore', () => {
 		});
 		
 		it('Calls callback with error if an error occurs', () =>{
-			var oAuthCodeStore = proxyquire('../oAuth2CodeStore', {
-				'moneypenny-server/services/collection' : sinon.stub().returns({
-					remove: sinon.stub().returns(Promise.reject())
-				})
-			});
+			var fakeStorageProvide =  {
+				codeStore : {
+					removeByCode : (code) => Promise.reject('err')
+				}
+			}
+			var oAuthCodeStore = require('../oAuth2CodeStore')(fakeStorageProvide, 'secret');
 			oAuthCodeStore.removeByCode('code', (error, saved)=>{
 				try{
 					should.exist(error);
@@ -160,12 +158,16 @@ describe('oAuthCodeStore', () => {
 	});
 	
 	describe('checkTTL', ()=>{
+		
+		var fakeStorageProvide =  {
+				codeStore : {
+					save :  (userid, clientid, scope, ttl) => Promise.resolve({})
+				}
+			}
+		
+		var oAuthCodeStore = require('../oAuth2CodeStore')(fakeStorageProvide, 'secret');
+		
 		it('Returns true if the token is still valid', (done)=> {
-				var oAuthCodeStore = proxyquire('../oAuth2CodeStore', {
-					'moneypenny-server/services/collection' : sinon.stub().returns({
-						save: sinon.stub().returns(Promise.resolve())
-					})
-				});
 				oAuthCodeStore.create('userId', 'clinetId', 'scope', 10000000, (err, code) => {
 					try{
 						oAuthCodeStore.checkTTL({code : code}).should.equal(true);
@@ -175,19 +177,14 @@ describe('oAuthCodeStore', () => {
 					}
 				})
 		}),
-		it('Returns false if the token is no longer valid', ()=>{
-				var oAuthCodeStore = proxyquire('../oAuth2CodeStore', {
-					'moneypenny-server/services/collection' : sinon.stub().returns({
-						save: sinon.stub().returns(Promise.resolve())
-					})
-				});
+		it('Returns false if the token is no longer valid', (done)=>{
 				oAuthCodeStore.create('userId', 'clinetId', 'scope', -1, (err, code) => {
 					try{
 						oAuthCodeStore.checkTTL({ code : code}).should.equal(false);
-						done(); 
+						done();
 					} catch (err){
 						done(err);
-					}
+					} 
 				})
 		});
 	});

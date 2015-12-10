@@ -5,5 +5,6 @@ require("babel/register")({
  });
 
 // Disable logging while testing.
-var logger = require('moneypenny-server/util/logger');
+//var logger = require('moneypenny-server/util/logger');
+var logger = require('winston');
 logger.remove(winston.transports.Console);

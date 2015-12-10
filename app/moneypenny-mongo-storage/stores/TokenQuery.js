@@ -1,6 +1,6 @@
 function oAuth2TokenQuery(){
 	return {
-		query : '',
+		query : {},
 		projection:{},
 		tokenEquals : function(token) {
 			this.query.token = token;

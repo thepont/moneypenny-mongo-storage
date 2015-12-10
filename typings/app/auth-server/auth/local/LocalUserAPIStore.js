@@ -52,7 +52,7 @@ module.exports = {
     },
     
     /**
-     * Changes a users password.
+     * Changes a users {password}.
      * @param {User} user attempting to change password.
      * @param {string} username username of the user that requires the password change. 
      * @param {string} newPassword password to change the password to.

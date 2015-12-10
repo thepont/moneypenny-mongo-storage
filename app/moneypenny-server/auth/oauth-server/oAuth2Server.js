@@ -25,6 +25,7 @@ module.exports = function(options){
     var oAuth2ClientStore = require('moneypenny-server/auth/oauth-server/client/oAuth2ClientStore')(options.storageProvider);
     var oAuth2UserStore = require('moneypenny-server/auth/oauth-server/user/oAuth2UserStore')(options.storageProvider);
     var oAuth2CodeStore = require('moneypenny-server/auth/oauth-server/code/oAuth2CodeStore')(options.storageProvider, 'secret');
+    
     logger.level = 'debug';
     oauth2.logger = logger;
     

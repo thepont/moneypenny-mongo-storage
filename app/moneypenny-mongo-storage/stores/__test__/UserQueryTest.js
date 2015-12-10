@@ -1,7 +1,7 @@
 var UserQuery = require('../UserQuery');
-var QueryTests = require('moneypenny-server/util/test/QueryTests')
+var QueryTests = require('moneypenny-mongo-storage/util/test/QueryTests');
 
 describe('UserQuery()', () => {   
-    QueryTests.itsAValidQueryObject(SessionUserQuery);
-	QueryTests.itCreatesIDQuery(SessionUserQuery);
+    QueryTests.itsAValidQueryObject(UserQuery);
+	QueryTests.itCreatesIDQuery(UserQuery);
 });

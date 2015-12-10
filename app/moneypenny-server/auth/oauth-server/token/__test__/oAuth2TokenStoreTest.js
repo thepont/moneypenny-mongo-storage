@@ -1,5 +1,5 @@
 
-var oAuth2TokenStore = require('../oAuth2TokenMongoStore');
+var oAuth2TokenStore = require('../oAuth2TokenStore');
 var proxyquire = require('proxyquire');
 var sinon = require('sinon');
 var should = require('should');
@@ -16,7 +16,7 @@ describe('oAuth2TokenStore', () => {
 		it('Creates a new oAuth2 code.', (done) =>{
 			var collectionSave = sinon.stub().returns(Promise.resolve({}));
 			var userId = new ObjectID();
-			var oAuth2TokenMongoStore = proxyquire('../oAuth2TokenMongoStore', {
+			var oAuth2TokenStore = proxyquire('../oAuth2TokenStore', {
 				'auth-server/services/collection' : sinon.stub().returns({
 					save: collectionSave
 				}),
@@ -27,7 +27,7 @@ describe('oAuth2TokenStore', () => {
 				}
 			});
 			
-			oAuth2TokenMongoStore.create(userId, 'client', 'ALL', 10000, (err, accessToken)=>{
+			oAuth2TokenStore.create(userId, 'client', 'ALL', 10000, (err, accessToken)=>{
 				try{
 					collectionSave.args[0][0].should.have.property('userId', userId);
 					collectionSave.args[0][0].should.have.property('clientId', 'client');						
@@ -42,7 +42,7 @@ describe('oAuth2TokenStore', () => {
 		it('Calls callback with error if an error occours while loading the user', (done) =>{
 			var collectionSave = sinon.stub().returns(Promise.resolve({}));
 			var userId = new ObjectID();
-			var oAuth2TokenMongoStore = proxyquire('../oAuth2TokenMongoStore', {
+			var oAuth2TokenStore = proxyquire('../oAuth2TokenStore', {
 				'auth-server/services/collection' : sinon.stub().returns({
 					save: collectionSave
 				}),
@@ -53,7 +53,7 @@ describe('oAuth2TokenStore', () => {
 				}
 			});
 			
-			oAuth2TokenMongoStore.create(userId, 'client', 'ALL', 10000, (err, accessToken)=>{
+			oAuth2TokenStore.create(userId, 'client', 'ALL', 10000, (err, accessToken)=>{
 				try{
 					should.exist(err);
 					done();
@@ -65,7 +65,7 @@ describe('oAuth2TokenStore', () => {
 		
 		it('Calls callback with error if an error occurs while saving the token', (done) =>{
 			var userId = new ObjectID();
-			var oAuth2TokenMongoStore = proxyquire('../oAuth2TokenMongoStore', {
+			var oAuth2TokenStore = proxyquire('../oAuth2TokenStore', {
 				'auth-server/services/collection' : sinon.stub().returns({
 					save: sinon.stub().returns(Promise.reject({}))
 				}),
@@ -76,7 +76,7 @@ describe('oAuth2TokenStore', () => {
 				}
 			});
 			
-			oAuth2TokenMongoStore.create(userId, 'client', 'ALL', 10000, (err, accessToken)=>{
+			oAuth2TokenStore.create(userId, 'client', 'ALL', 10000, (err, accessToken)=>{
 				try{
 					should.exist(err);
 					done();
@@ -90,7 +90,7 @@ describe('oAuth2TokenStore', () => {
 	
 	describe('fetchByToken()', () => {
 		it('Returns oAuth token from database if found', () =>{
-			var oAuth2TokenMongoStore = proxyquire('../oAuth2TokenMongoStore', {
+			var oAuth2TokenStore = proxyquire('../oAuth2TokenStore', {
 				'auth-server/services/collection' : sinon.stub().returns({
 					findOne: sinon.stub().returns(Promise.resolve({
 						userId: 'userId',
@@ -100,7 +100,7 @@ describe('oAuth2TokenStore', () => {
 					}))
 				})
 			});
-			oAuth2TokenMongoStore.fetchByToken('testcode', (err, item)=>{
+			oAuth2TokenStore.fetchByToken('testcode', (err, item)=>{
 				try{
 					item.should.have.property('userId', 'userId');
 					item.should.have.property('clientId', 'clientId');
@@ -115,12 +115,12 @@ describe('oAuth2TokenStore', () => {
 		});
 		
 		it('Calls callback with error if an error occours', () =>{
-			var oAuth2TokenMongoStore = proxyquire('../oAuth2TokenMongoStore', {
+			var oAuth2TokenStore = proxyquire('../oAuth2TokenStore', {
 				'auth-server/services/collection' : sinon.stub().returns({
 					findOne: sinon.stub().returns(Promise.reject({}))
 				})
 			});
-			oAuth2TokenMongoStore.fetchByToken('testcode', (error, saved)=>{
+			oAuth2TokenStore.fetchByToken('testcode', (error, saved)=>{
 				try{
 					should.exist(error);
 					done();
@@ -133,7 +133,7 @@ describe('oAuth2TokenStore', () => {
 	
 	describe('checkTTL()', () => {
 		it('Returns true if the token is still valid', (done)=> {
-			var oAuth2TokenMongoStore = proxyquire('../oAuth2TokenMongoStore', {
+			var oAuth2TokenStore = proxyquire('../oAuth2TokenStore', {
 				'auth-server/services/collection' : sinon.stub().returns({
 					save: sinon.stub().returns(Promise.resolve())
 				}),
@@ -143,9 +143,9 @@ describe('oAuth2TokenStore', () => {
 					)
 				}
 			});
-			oAuth2TokenMongoStore.create(new ObjectID(), 'client', 'ALL', 10000, (err, token)=>{
+			oAuth2TokenStore.create(new ObjectID(), 'client', 'ALL', 10000, (err, token)=>{
 				try{
-					oAuth2TokenMongoStore.checkTTL({token : token}).should.equal(true);
+					oAuth2TokenStore.checkTTL({token : token}).should.equal(true);
 					done();
 				} catch (err){
 					done(err);
@@ -153,7 +153,7 @@ describe('oAuth2TokenStore', () => {
 			});
 		});
 		it('Returns false if the token is no longer valid', (done)=> {
-			var oAuth2TokenMongoStore = proxyquire('../oAuth2TokenMongoStore', {
+			var oAuth2TokenStore = proxyquire('../oAuth2TokenStore', {
 				'auth-server/services/collection' : sinon.stub().returns({
 					save: sinon.stub().returns(Promise.resolve())
 				}),
@@ -164,9 +164,9 @@ describe('oAuth2TokenStore', () => {
 				}
 			});
 			
-			oAuth2TokenMongoStore.create(new ObjectID(), 'client', 'ALL', -10000, (err, token)=>{
+			oAuth2TokenStore.create(new ObjectID(), 'client', 'ALL', -10000, (err, token)=>{
 				try{
-					oAuth2TokenMongoStore.checkTTL({token : token}).should.equal(false);
+					oAuth2TokenStore.checkTTL({token : token}).should.equal(false);
 					done();
 				} catch (err){
 					done(err);
@@ -187,7 +187,7 @@ describe('oAuth2TokenStore', () => {
 	
 	describe('fetchByUserIdClientId()', () => {
 		it('Fetch the token by user and clientid', (done) =>{
-			var oAuth2TokenMongoStore = proxyquire('../oAuth2TokenMongoStore', {
+			var oAuth2TokenStore = proxyquire('../oAuth2TokenStore', {
 				'auth-server/services/collection' : sinon.stub().returns({
 					findOne: sinon.stub().returns(Promise.resolve({
 						'test':'test'
@@ -195,7 +195,7 @@ describe('oAuth2TokenStore', () => {
 				})
 			});
 				
-			oAuth2TokenMongoStore.fetchByUserIdClientId(new ObjectID(), 'test', (err, token)=>{
+			oAuth2TokenStore.fetchByUserIdClientId(new ObjectID(), 'test', (err, token)=>{
 				try{
 					should.not.exist(err);
 					token.should.have.property('test', 'test');
@@ -207,13 +207,13 @@ describe('oAuth2TokenStore', () => {
 		});
 		
 		it('Returns an error if it fails to fetch the token', (done) =>{
-			var oAuth2TokenMongoStore = proxyquire('../oAuth2TokenMongoStore', {
+			var oAuth2TokenStore = proxyquire('../oAuth2TokenStore', {
 				'auth-server/services/collection' : sinon.stub().returns({
 					findOne: sinon.stub().returns(Promise.reject({}))
 				})
 			});
 				
-			oAuth2TokenMongoStore.fetchByUserIdClientId(new ObjectID(), 'test', (err, token)=>{
+			oAuth2TokenStore.fetchByUserIdClientId(new ObjectID(), 'test', (err, token)=>{
 				try{
 					should.exist(err);
 					done();

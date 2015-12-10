@@ -5,13 +5,16 @@ var sinon = require('sinon');
 describe('oAuthServerTest', () => {
 	it('Sets model.client functions for oauth20-provider', () => {
 		var oAuth2 = proxyquire('../oAuth2Server', {
-			'moneypenny-server/auth/oauth-server/client/oAuth2ClientStore' : {
-				getId: () => {},
-				getRedirectUri: () => {},
-				fetchById: () => {},
-				checkSecret: () => {}
+			'moneypenny-server/auth/oauth-server/client/oAuth2ClientStore' :() => {
+				return {
+					getId: () => {},
+					getRedirectUri: () => {},
+					fetchById: () => {},
+					checkSecret: () => {}
+				}
 			}
-		});
+			
+		})({storageProvider :{}});
 		
 		oAuth2.model.client.getId.should.be.Function();
 		oAuth2.model.client.getRedirectUri.should.be.Function();
@@ -27,16 +30,18 @@ describe('oAuthServerTest', () => {
 		
 		
 		var oAuth2 = proxyquire('../oAuth2Server', {
-			'moneypenny-server/auth/oauth-server/refresh-token/oAuth2RefreshTokenMongoStore' : {
-				getUserId: () => {},
-				getClientId: () => {},
-				getScope: () => {},
-				fetchByToken: () => {},
-				removeByUserIdClientId: () => {},
-				removeByRefreshToken: () => {},
-				create: () => {},
+			'moneypenny-server/auth/oauth-server/refresh-token/oAuth2RefreshTokenStore' : () => {
+				return {
+					getUserId: () => {},
+					getClientId: () => {},
+					getScope: () => {},
+					fetchByToken: () => {},
+					removeByUserIdClientId: () => {},
+					removeByRefreshToken: () => {},
+					create: () => {},
+				}
 			}
-		});
+		})({storageProvider :{}});
 		
 		
 		oAuth2.model.refreshToken.getUserId.should.be.Function();
@@ -59,16 +64,18 @@ describe('oAuthServerTest', () => {
 	it('Sets model.accessToken functions for oauth20-provider', () => {
 		
 		var oAuth2 = proxyquire('../oAuth2Server', {
-			'moneypenny-server/auth/oauth-server/token/oAuth2TokenMongoStore' : {
-				getToken: () => {},
-				fetchByToken: () => {},
-				removeByUserIdClientId: () => {},
-				removeByRefreshToken: () => {},
-				create: () => {},
-				checkTTL: () => {},
-				getTTL: () => {}
+			'moneypenny-server/auth/oauth-server/token/oAuth2TokenStore' : () => {
+				return {
+					getToken: () => {},
+					fetchByToken: () => {},
+					fetchByUserIdClientId: () => {},
+					removeByRefreshToken: () => {},
+					create: () => {},
+					checkTTL: () => {},
+					getTTL: () => {}
+				}
 			}
-		});
+		})({storageProvider :{}});
 		
 		oAuth2.model.accessToken.getToken.should.be.Function();
 		oAuth2.model.accessToken.fetchByToken.should.be.Function();
@@ -87,32 +94,36 @@ describe('oAuthServerTest', () => {
 	
 	it('Sets model.user functions for oauth20-provider', () => {
 		var oAuth2 = proxyquire('../oAuth2Server', {
-			'moneypenny-server/auth/oauth-server/user/oAuth2UserStore' : {
-				fetchFromRequest: () => {},
-				getId: () => {}
+			'moneypenny-server/auth/oauth-server/user/oAuth2UserStore' : () => {
+				return {
+					fetchFromRequest: () => {},
+					getId: () => {}
+				}
 			}
-		});
+		})({storageProvider :{}});
 		
 		oAuth2.model.user.fetchFromRequest.should.be.Function();
 		oAuth2.model.user.getId.should.be.Function();
 
 		oAuth2.model.user.fetchFromRequest();
 		oAuth2.model.user.getId();
-	});
+	})
 	
 	it('Sets model.code functions for oauth20-provider', () => {
 		
 		var oAuth2 = proxyquire('../oAuth2Server', {
-			'moneypenny-server/auth/oauth-server/code/oAuth2CodeStore': {
-				create: () => {},
-				fetchByCode: () => {},
-				removeByCode: () => {},
-				getUserId: () => {},
-				getClientId: () => {},
-				getScope: () => {},
-				checkTTL: () => {},
+			'moneypenny-server/auth/oauth-server/code/oAuth2CodeStore': () => {
+				return {
+					create: () => {},
+					fetchByCode: () => {},
+					removeByCode: () => {},
+					getUserId: () => {},
+					getClientId: () => {},
+					getScope: () => {},
+					checkTTL: () => {},
+				}
 			}
-		});
+		})({storageProvider :{}});
 		
 		oAuth2.model.code.getUserId.should.be.Function();
 		oAuth2.model.code.getClientId.should.be.Function();
@@ -132,7 +143,7 @@ describe('oAuthServerTest', () => {
 	describe('decision()', () => { 
 		it('Automatically decides for the user to Authorize the server', (done) => {
 			
-			var oAuth2 = require('../oAuth2Server');
+			var oAuth2 = require('../oAuth2Server')({storageProvider :{}});
 			oAuth2.controller.authorization = (req, res) => {
 				//Check that we are called with the correct parameters
 				try{
@@ -150,5 +161,15 @@ describe('oAuthServerTest', () => {
 			oAuth2.decision(req,res);
 		});
 	});
+	
+	it('Throws error if no storage provider is send.', (done) => {
+		try{	
+			var oAuth2 = require('../oAuth2Server')({});
+		} catch(err) {
+			should.exist(err);
+			done();
+		}
+	});
+		
 	
 });   

@@ -8,14 +8,14 @@ const COLLECTION_FINDONE_RETURN = Promise.resolve('findOne return');
 // var save = sinon.stub().returns(COLLECTION_SAVE_RETURN);
 var findOne = sinon.stub().returns(COLLECTION_FINDONE_RETURN);
 
-var oAuth2ClientStore = proxyquire('../oAuth2ClientStore', {
-	'moneypenny-server/services/collection' : sinon.stub().returns({
-		findOne: findOne
-	}),
-	'../oAuth2ClientQuery' : sinon.stub().returns({
-		idEquals : 	sinon.stub().returns({})
-	})
-});
+
+var storageProvider = {
+			clientStore : {
+				fetchById: Promise.resolve('return')
+			}
+		};
+		
+var oAuth2ClientStore = require('../oAuth2ClientStore')(storageProvider);
 
 
 
@@ -35,16 +35,21 @@ describe('oAuth2ClientStore', () => {
 		});
 	});
 	describe('fetchById()', () => {
-		it('Callsback with the oAuth client on correct id', (done)=> {
-			var oAuth2ClientStore = proxyquire('../oAuth2ClientStore', {
-				'moneypenny-server/services/collection' : sinon.stub().returns({
-					findOne: sinon.stub().returns(Promise.resolve({
-            			id: 'clientId',
-            			redirectUri: 'redirectUri',
-						secret: 'secret'
-					}))
-				})
-			});
+		it('Calls back with the oAuth client on correct id', (done)=> {
+				var fakeClient = { 
+					id: 'clientId',
+					redirectUri: 'redirectUri',
+					secret: 'secret'
+				};
+				
+				var fakeStorageProvider = {
+					clientStore : {
+						fetchById: () => Promise.resolve(fakeClient)
+					}
+				}
+			
+			var oAuth2ClientStore = require('../oAuth2ClientStore')(fakeStorageProvider);
+			
 			oAuth2ClientStore.fetchById('clientId', (err, item)=>{
 				try{
 					should.not.exist(err);
@@ -57,12 +62,15 @@ describe('oAuth2ClientStore', () => {
 				}
 			});
 		});
-		it('Callsback with an error if unable to fetch client', ()=> {
-			var oAuth2ClientStore = proxyquire('../oAuth2ClientStore', {
-				'moneypenny-server/services/collection' : sinon.stub().returns({
-					findOne: sinon.stub().returns(Promise.reject({}))
-				})
-			});
+		it('Calls back with an error if unable to fetch client', ()=> {
+			
+			var fakeStorageProvider = {
+				clientStore : {
+					fetchById: () => Promise.reject('ERROR')
+				}
+			}
+			var oAuth2ClientStore = require('../oAuth2ClientStore')(fakeStorageProvider);
+			
 			oAuth2ClientStore.fetchById('clientId', (err, item)=>{
 				try{
 					should.exist(err);
