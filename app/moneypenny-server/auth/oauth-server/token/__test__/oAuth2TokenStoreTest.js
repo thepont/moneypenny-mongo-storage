@@ -1,9 +1,11 @@
 
-var oAuth2TokenStore = require('../oAuth2TokenStore');
+var oAuth2TokenStore = require('../oAuth2TokenStore')({});
 var proxyquire = require('proxyquire');
 var sinon = require('sinon');
 var should = require('should');
-var {ObjectID} = require('mongodb');
+var ObjectID = require('mongodb').ObjectID;
+
+const TEST_SECRET = 'secret';
 
 describe('oAuth2TokenStore', () => {   
 	describe('getToken()', () => {
@@ -16,19 +18,18 @@ describe('oAuth2TokenStore', () => {
 		it('Creates a new oAuth2 code.', (done) =>{
 			var collectionSave = sinon.stub().returns(Promise.resolve({}));
 			var userId = new ObjectID();
-			var oAuth2TokenStore = proxyquire('../oAuth2TokenStore', {
-				'auth-server/services/collection' : sinon.stub().returns({
-					save: collectionSave
-				}),
-				'auth-server/auth/session/SessionUserApiStore' : {
-					load : sinon.stub().returns(
-						Promise.resolve({userName:'test'})
-					)
+			var oAuth2TokenStore = require('../oAuth2TokenStore')({
+				userStore : {
+					fetchById : () => Promise.resolve({userName:'test'})
+				}, 
+				tokenStore : {
+					save : collectionSave
 				}
-			});
-			
+			}, TEST_SECRET);
+						
 			oAuth2TokenStore.create(userId, 'client', 'ALL', 10000, (err, accessToken)=>{
 				try{
+					should.not.exist(err);
 					collectionSave.args[0][0].should.have.property('userId', userId);
 					collectionSave.args[0][0].should.have.property('clientId', 'client');						
 					collectionSave.args[0][0].should.have.property('scope', 'ALL');
@@ -42,16 +43,15 @@ describe('oAuth2TokenStore', () => {
 		it('Calls callback with error if an error occours while loading the user', (done) =>{
 			var collectionSave = sinon.stub().returns(Promise.resolve({}));
 			var userId = new ObjectID();
-			var oAuth2TokenStore = proxyquire('../oAuth2TokenStore', {
-				'auth-server/services/collection' : sinon.stub().returns({
-					save: collectionSave
-				}),
-				'auth-server/auth/session/SessionUserApiStore' : {
-					load : sinon.stub().returns(
-						Promise.reject('')
-					)
+			
+			var oAuth2TokenStore = require('../oAuth2TokenStore')({
+				userStore : {
+					fetchById : () => Promise.reject('')
+				}, 
+				tokenStore : {
+					save : collectionSave
 				}
-			});
+			}, TEST_SECRET);
 			
 			oAuth2TokenStore.create(userId, 'client', 'ALL', 10000, (err, accessToken)=>{
 				try{
@@ -65,17 +65,15 @@ describe('oAuth2TokenStore', () => {
 		
 		it('Calls callback with error if an error occurs while saving the token', (done) =>{
 			var userId = new ObjectID();
-			var oAuth2TokenStore = proxyquire('../oAuth2TokenStore', {
-				'auth-server/services/collection' : sinon.stub().returns({
-					save: sinon.stub().returns(Promise.reject({}))
-				}),
-				'auth-server/auth/session/SessionUserApiStore' : {
-					load : sinon.stub().returns(
-						Promise.resolve({userName:'test'})
-					)
-				}
-			});
 			
+			var oAuth2TokenStore = require('../oAuth2TokenStore')({
+				userStore : {
+					fetchById : () => Promise.resolve({userName:'test'})
+				}, 
+				tokenStore : {
+					save : Promise.reject({})
+				}
+			}, TEST_SECRET);
 			oAuth2TokenStore.create(userId, 'client', 'ALL', 10000, (err, accessToken)=>{
 				try{
 					should.exist(err);
@@ -90,16 +88,18 @@ describe('oAuth2TokenStore', () => {
 	
 	describe('fetchByToken()', () => {
 		it('Returns oAuth token from database if found', () =>{
-			var oAuth2TokenStore = proxyquire('../oAuth2TokenStore', {
-				'auth-server/services/collection' : sinon.stub().returns({
-					findOne: sinon.stub().returns(Promise.resolve({
+			var oAuth2TokenStore = require('../oAuth2TokenStore')({
+				userStore : {
+				}, 
+				tokenStore : {
+					fetchByToken : () => Promise.resolve({
 						userId: 'userId',
             			clientId: 'clientId',
             			scope: 'scope',
 						token: 'token'
-					}))
-				})
-			});
+					})
+				}
+			}, TEST_SECRET);
 			oAuth2TokenStore.fetchByToken('testcode', (err, item)=>{
 				try{
 					item.should.have.property('userId', 'userId');
@@ -115,11 +115,14 @@ describe('oAuth2TokenStore', () => {
 		});
 		
 		it('Calls callback with error if an error occours', () =>{
-			var oAuth2TokenStore = proxyquire('../oAuth2TokenStore', {
-				'auth-server/services/collection' : sinon.stub().returns({
-					findOne: sinon.stub().returns(Promise.reject({}))
-				})
-			});
+			
+			var oAuth2TokenStore = require('../oAuth2TokenStore')({
+				userStore : {
+				}, 
+				tokenStore : {
+					fetchByToken : () => Promise.reject({})
+				}
+			}, TEST_SECRET);
 			oAuth2TokenStore.fetchByToken('testcode', (error, saved)=>{
 				try{
 					should.exist(error);
@@ -133,16 +136,15 @@ describe('oAuth2TokenStore', () => {
 	
 	describe('checkTTL()', () => {
 		it('Returns true if the token is still valid', (done)=> {
-			var oAuth2TokenStore = proxyquire('../oAuth2TokenStore', {
-				'auth-server/services/collection' : sinon.stub().returns({
-					save: sinon.stub().returns(Promise.resolve())
-				}),
-				'auth-server/auth/session/SessionUserApiStore' : {
-					load : sinon.stub().returns(
-						Promise.resolve({userName:'test'})
-					)
+			
+			var oAuth2TokenStore = require('../oAuth2TokenStore')({
+				userStore : {
+					fetchById : () => Promise.resolve({userName:'test'})
+				}, 
+				tokenStore : {
+					save : () => Promise.resolve({})
 				}
-			});
+			}, TEST_SECRET);
 			oAuth2TokenStore.create(new ObjectID(), 'client', 'ALL', 10000, (err, token)=>{
 				try{
 					oAuth2TokenStore.checkTTL({token : token}).should.equal(true);
@@ -153,16 +155,14 @@ describe('oAuth2TokenStore', () => {
 			});
 		});
 		it('Returns false if the token is no longer valid', (done)=> {
-			var oAuth2TokenStore = proxyquire('../oAuth2TokenStore', {
-				'auth-server/services/collection' : sinon.stub().returns({
-					save: sinon.stub().returns(Promise.resolve())
-				}),
-				'auth-server/auth/session/SessionUserApiStore' : {
-					load : sinon.stub().returns(
-						Promise.resolve({userName:'test'})
-					)
+			var oAuth2TokenStore = require('../oAuth2TokenStore')({
+				userStore : {
+					fetchById : () => Promise.resolve({userName:'test'})
+				}, 
+				tokenStore : {
+					save : () => Promise.resolve({})
 				}
-			});
+			}, TEST_SECRET);
 			
 			oAuth2TokenStore.create(new ObjectID(), 'client', 'ALL', -10000, (err, token)=>{
 				try{
@@ -187,13 +187,11 @@ describe('oAuth2TokenStore', () => {
 	
 	describe('fetchByUserIdClientId()', () => {
 		it('Fetch the token by user and clientid', (done) =>{
-			var oAuth2TokenStore = proxyquire('../oAuth2TokenStore', {
-				'auth-server/services/collection' : sinon.stub().returns({
-					findOne: sinon.stub().returns(Promise.resolve({
-						'test':'test'
-					}))
-				})
-			});
+			var oAuth2TokenStore = require('../oAuth2TokenStore')({
+				tokenStore : {
+					fetchByUserIdClientId : () => Promise.resolve({'test':'test'})
+				}
+			}, TEST_SECRET);
 				
 			oAuth2TokenStore.fetchByUserIdClientId(new ObjectID(), 'test', (err, token)=>{
 				try{
@@ -207,12 +205,13 @@ describe('oAuth2TokenStore', () => {
 		});
 		
 		it('Returns an error if it fails to fetch the token', (done) =>{
-			var oAuth2TokenStore = proxyquire('../oAuth2TokenStore', {
-				'auth-server/services/collection' : sinon.stub().returns({
-					findOne: sinon.stub().returns(Promise.reject({}))
-				})
-			});
-				
+			
+			var oAuth2TokenStore = require('../oAuth2TokenStore')({
+				tokenStore : {
+					fetchByUserIdClientId : () => Promise.reject({})
+				}
+			}, TEST_SECRET);
+
 			oAuth2TokenStore.fetchByUserIdClientId(new ObjectID(), 'test', (err, token)=>{
 				try{
 					should.exist(err);

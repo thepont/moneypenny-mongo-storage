@@ -13,7 +13,7 @@ module.exports = function(storageProvider){
         * Returns the user found inthe database.
         */
         fetchById: (id, cb) => { 
-            userStore.load(id)
+            userStore.fetchById(id)
                 .then(user => cb(null, user))
                 .catch(err => cb(err));
         },
