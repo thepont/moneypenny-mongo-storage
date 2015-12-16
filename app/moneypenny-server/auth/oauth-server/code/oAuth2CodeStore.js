@@ -29,7 +29,7 @@ module.exports = function(storageProvider, secret){
                 ttl: ttl
             }
             return new Promise((resolve, reject)=>{
-                var code = jwt.sign(oauth2Code, secret, {maxAge: ttl, ignoreExpiration: false});
+                var code = jwt.sign(oauth2Code, secret, { expiresInSeconds: ttl, ignoreExpiration: false});
                 oauth2Code.code = code;
                 return codeStore.save(oauth2Code).then(() => {
                     return resolve(code);

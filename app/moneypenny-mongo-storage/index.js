@@ -1,7 +1,3 @@
-require("babel/register")({
-    highlightCode: false  
- });
-
 const ERR_DB_NOT_SET = 'options.db is not set';
 
 const COLLECTION_OAUTH_USERS = 'oauth_users';

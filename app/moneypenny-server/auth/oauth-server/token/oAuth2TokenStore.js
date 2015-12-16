@@ -57,7 +57,7 @@ module.exports = function(storageProvider, secret){
 		fetchByUserIdClientId : function(userId, clientId, cb){
 	
 			tokenStore.fetchByUserIdClientId(userId, clientId).then((accessToken) => {
-				return cb(null, accessToken)
+				return cb(null, accessToken);
 			}).catch((err) =>{
 				return cb(err);
 			});

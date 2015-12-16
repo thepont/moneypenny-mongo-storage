@@ -27,9 +27,9 @@ describe('oAuth2TokenStore', () => {
 				}
 			}, TEST_SECRET);
 						
-			oAuth2TokenStore.create(userId, 'client', 'ALL', 10000, (err, accessToken)=>{
+			oAuth2TokenStore.create(userId, 'client', 'ALL', 10000, (error, accessToken)=>{
 				try{
-					should.not.exist(err);
+					should.not.exist(error);
 					collectionSave.args[0][0].should.have.property('userId', userId);
 					collectionSave.args[0][0].should.have.property('clientId', 'client');						
 					collectionSave.args[0][0].should.have.property('scope', 'ALL');
@@ -53,9 +53,9 @@ describe('oAuth2TokenStore', () => {
 				}
 			}, TEST_SECRET);
 			
-			oAuth2TokenStore.create(userId, 'client', 'ALL', 10000, (err, accessToken)=>{
+			oAuth2TokenStore.create(userId, 'client', 'ALL', 10000, (error, accessToken)=>{
 				try{
-					should.exist(err);
+					should.exist(error);
 					done();
 				}catch (err){
 					done(err);
@@ -74,9 +74,9 @@ describe('oAuth2TokenStore', () => {
 					save : Promise.reject({})
 				}
 			}, TEST_SECRET);
-			oAuth2TokenStore.create(userId, 'client', 'ALL', 10000, (err, accessToken)=>{
+			oAuth2TokenStore.create(userId, 'client', 'ALL', 10000, (error, accessToken)=>{
 				try{
-					should.exist(err);
+					should.exist(error);
 					done();
 				}catch (err){
 					done(err);
@@ -100,7 +100,7 @@ describe('oAuth2TokenStore', () => {
 					})
 				}
 			}, TEST_SECRET);
-			oAuth2TokenStore.fetchByToken('testcode', (err, item)=>{
+			oAuth2TokenStore.fetchByToken('testcode', (error, item)=>{
 				try{
 					item.should.have.property('userId', 'userId');
 					item.should.have.property('clientId', 'clientId');
@@ -114,7 +114,7 @@ describe('oAuth2TokenStore', () => {
 			
 		});
 		
-		it('Calls callback with error if an error occours', () =>{
+		it('Calls callback with error if an error occours', (done) =>{
 			
 			var oAuth2TokenStore = require('../oAuth2TokenStore')({
 				userStore : {
@@ -145,7 +145,7 @@ describe('oAuth2TokenStore', () => {
 					save : () => Promise.resolve({})
 				}
 			}, TEST_SECRET);
-			oAuth2TokenStore.create(new ObjectID(), 'client', 'ALL', 10000, (err, token)=>{
+			oAuth2TokenStore.create(new ObjectID(), 'client', 'ALL', 10000, (error, token)=>{
 				try{
 					oAuth2TokenStore.checkTTL({token : token}).should.equal(true);
 					done();
@@ -164,7 +164,7 @@ describe('oAuth2TokenStore', () => {
 				}
 			}, TEST_SECRET);
 			
-			oAuth2TokenStore.create(new ObjectID(), 'client', 'ALL', -10000, (err, token)=>{
+			oAuth2TokenStore.create(new ObjectID(), 'client', 'ALL', -10000, (error, token)=>{
 				try{
 					oAuth2TokenStore.checkTTL({token : token}).should.equal(false);
 					done();
@@ -193,9 +193,9 @@ describe('oAuth2TokenStore', () => {
 				}
 			}, TEST_SECRET);
 				
-			oAuth2TokenStore.fetchByUserIdClientId(new ObjectID(), 'test', (err, token)=>{
+			oAuth2TokenStore.fetchByUserIdClientId(new ObjectID(), 'test', (error, token)=>{
 				try{
-					should.not.exist(err);
+					should.not.exist(error);
 					token.should.have.property('test', 'test');
 					done();
 				} catch (err){
@@ -212,9 +212,9 @@ describe('oAuth2TokenStore', () => {
 				}
 			}, TEST_SECRET);
 
-			oAuth2TokenStore.fetchByUserIdClientId(new ObjectID(), 'test', (err, token)=>{
+			oAuth2TokenStore.fetchByUserIdClientId(new ObjectID(), 'test', (error, token)=>{
 				try{
-					should.exist(err);
+					should.exist(error);
 					done();
 				} catch (err){
 					done(err);

@@ -48,9 +48,9 @@ describe('oAuth2RefreshTokenStore', () => {
 					save : () => Promise.resolve({})
 				}
 			});
-			oAuth2RefreshTokenStore.create('userid','clientid','scope', (err, token) => {
+			oAuth2RefreshTokenStore.create('userid','clientid','scope', (error, token) => {
 				try{
-					should.not.exist(err);
+					should.not.exist(error);
 					token.should.equal('12345');
 					done();
 				} catch (err){
@@ -64,9 +64,9 @@ describe('oAuth2RefreshTokenStore', () => {
 					save : () => Promise.reject('err')
 				}
 			});
-			oAuth2RefreshTokenStore.create('userid','clientid','scope', (err, token) => {
+			oAuth2RefreshTokenStore.create('userid','clientid','scope', (error, token) => {
 				try{
-					should.exist(err);
+					should.exist(error);
 					done();
 				} catch (err){
 					done(err);
@@ -85,9 +85,9 @@ describe('oAuth2RefreshTokenStore', () => {
 					fetchByToken : () => Promise.resolve(token)
 				}
 			});
-			oAuth2RefreshTokenStore.fetchByToken('token', (err, token) => {
+			oAuth2RefreshTokenStore.fetchByToken('token', (error, token) => {
 				try{
-					should.not.exist(err);
+					should.not.exist(error);
 					token.should.equal(token);
 					done();
 				} catch (err){
@@ -102,9 +102,9 @@ describe('oAuth2RefreshTokenStore', () => {
 					fetchByToken : () => Promise.reject('err')
 				}
 			});
-			oAuth2RefreshTokenStore.fetchByToken('token', (err, token) => {
+			oAuth2RefreshTokenStore.fetchByToken('token', (error, token) => {
 				try{
-					should.exist(err);
+					should.exist(error);
 					done();
 				} catch (err){
 					done(err);
@@ -119,9 +119,9 @@ describe('oAuth2RefreshTokenStore', () => {
 					removeByUserIdClientId : () => Promise.resolve({})
 				}
 			});
-			oAuth2RefreshTokenStore.removeByUserIdClientId('userId', 'clientid', (err) => {
+			oAuth2RefreshTokenStore.removeByUserIdClientId('userId', 'clientid', (error) => {
 				try{
-					should.not.exist(err);
+					should.not.exist(error);
 					done();
 				} catch (err){
 					done(err);
@@ -135,9 +135,9 @@ describe('oAuth2RefreshTokenStore', () => {
 					removeByUserIdClientId : () => Promise.reject('err')
 				}
 			});
-			oAuth2RefreshTokenStore.removeByUserIdClientId('userId', 'clientid', (err) => {
+			oAuth2RefreshTokenStore.removeByUserIdClientId('userId', 'clientid', (error) => {
 				try{
-					should.exist(err);
+					should.exist(error);
 					done();
 				} catch (err){
 					done(err);
@@ -152,9 +152,9 @@ describe('oAuth2RefreshTokenStore', () => {
 					removeByRefreshToken : () => Promise.resolve({})
 				}
 			});
-			oAuth2RefreshTokenStore.removeByRefreshToken('token', (err) => {
+			oAuth2RefreshTokenStore.removeByRefreshToken('token', (error) => {
 				try{
-					should.not.exist(err);
+					should.not.exist(error);
 					done();
 				} catch (err){
 					done(err);
@@ -168,9 +168,9 @@ describe('oAuth2RefreshTokenStore', () => {
 					removeByRefreshToken : () => Promise.reject('err')
 				}
 			});
-			oAuth2RefreshTokenStore.removeByRefreshToken('token', (err) => {
+			oAuth2RefreshTokenStore.removeByRefreshToken('token', (error) => {
 				try{
-					should.exist(err);
+					should.exist(error);
 					done();
 				} catch (err){
 					done(err);

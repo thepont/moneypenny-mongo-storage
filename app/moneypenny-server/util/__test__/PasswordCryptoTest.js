@@ -26,12 +26,12 @@ describe('PasswordCrypto', () => {
 		it('Rejects if bcrypt.genSalt returns an error', (done)=> {
 			var PasswordCrypto = proxyquire('../PasswordCrypto', {
 				'bcrypt' : {
-					genSalt : (workFactor, cb)=>{return cb('err')}
+					genSalt : (workFactor, cb)=>{return cb('err');}
 				}
 			});
 						
 			return PasswordCrypto.createHash('password')
-					.then(function(hash) {;
+					.then(function(hash) {
 						return done(Error('Promise should have rejected with error'));
 					}).catch(function(err){
 						return done();
@@ -41,13 +41,13 @@ describe('PasswordCrypto', () => {
 		it('Rejects if bcrypt.hash returns an error', (done)=> {
 			var PasswordCrypto = proxyquire('../PasswordCrypto', {
 				'bcrypt' : {
-						genSalt : (workFactor, cb)=>{return cb(null, 'pepper')},
-						hash: (password,pepper, cb)=>{return cb('err')}
+						genSalt : (workFactor, cb)=>{return cb(null, 'pepper');},
+						hash: (password,pepper, cb)=>{return cb('err');}
 					}
 				});
 						
 			return PasswordCrypto.createHash('password')
-					.then(function(hash) {;
+					.then(function(hash) {
 						return done(Error('Promise should have rejected with error'));
 					}).catch(function(err){
 						return done();

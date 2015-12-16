@@ -50,9 +50,9 @@ describe('oAuth2ClientStore', () => {
 			
 			var oAuth2ClientStore = require('../oAuth2ClientStore')(fakeStorageProvider);
 			
-			oAuth2ClientStore.fetchById('clientId', (err, item)=>{
+			oAuth2ClientStore.fetchById('clientId', (error, item)=>{
 				try{
-					should.not.exist(err);
+					should.not.exist(error);
 					item.should.have.property('id', 'clientId');
 					item.should.have.property('redirectUri', 'redirectUri');
 					item.should.have.property('secret', 'secret');
@@ -62,7 +62,7 @@ describe('oAuth2ClientStore', () => {
 				}
 			});
 		});
-		it('Calls back with an error if unable to fetch client', ()=> {
+		it('Calls back with an error if unable to fetch client', (done)=> {
 			
 			var fakeStorageProvider = {
 				clientStore : {
@@ -71,9 +71,9 @@ describe('oAuth2ClientStore', () => {
 			}
 			var oAuth2ClientStore = require('../oAuth2ClientStore')(fakeStorageProvider);
 			
-			oAuth2ClientStore.fetchById('clientId', (err, item)=>{
+			oAuth2ClientStore.fetchById('clientId', (error, item)=>{
 				try{
-					should.exist(err);
+					should.exist(error);
 					return done();
 				} catch(err){
 					return done(err);
@@ -86,9 +86,9 @@ describe('oAuth2ClientStore', () => {
 		it('Call callback with true if password matches hash',(done)=>{
 			var PasswordCrypto = require('moneypenny-server/util/PasswordCrypto');
 			PasswordCrypto.createHash('test').then((hash)=>{
-				oAuth2ClientStore.checkSecret({secret: hash},'test',(err, result)=>{
+				oAuth2ClientStore.checkSecret({secret: hash},'test',(error, result)=>{
 					try{
-						should.not.exist(err);		
+						should.not.exist(error);		
 						result.should.equal(true);
 						return done();
 					} catch(err){
@@ -98,9 +98,9 @@ describe('oAuth2ClientStore', () => {
 			})
 		});
 		it('Call callback with false if password does not match hash',(done)=>{
-			oAuth2ClientStore.checkSecret({secret: 'hash'},'hash',(err, result)=>{
+			oAuth2ClientStore.checkSecret({secret: 'hash'},'hash',(error, result)=>{
 					try{
-						should.not.exist(err);		
+						should.not.exist(error);		
 						result.should.equal(false);
 						return done();
 					} catch(err){

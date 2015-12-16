@@ -19,34 +19,61 @@ module.exports = function(grunt){
 //                src: ['**/__test__/*.js']
 //            }
 //        }
+
+        jshint:{
+             options:{
+                esnext: true,
+                asi: true,
+                shadow: false
+             },
+             all: ['Gruntfile.js', 'app/**/*.js']
+        },
         mocha_istanbul: {
             target : {
                 options : {
                     dryRun: true,
                     ui: true,
                     scriptPath: require.resolve('babel-istanbul'),
-                    istanbulOptions: '--use-babel-runtime',
-                    require: './tests/bable-setup.js'
+                    //istanbulOptions: '--use-babel-runtime',
+                    //require: './tests/bable-setup.js'
                     //mochaOptions: '--require ./tests/bable-setup.js' 
                 }
             },
-            coverage: {
-                src: ['app/**/__test__/*.js'], 
+            //coverage:{
+            //    src: 'app/**/__test__/*.js'
+            //},
+            coverage:{
+                src: 'app/**/__test__/*.js',
                 options : {
-                    dryRun: false,
-                    coverageFolder: 'coverage',
-                    root: './app/moneypenny-server',
-                    excludes: ['**/__test__/*.js'],
-                    print: 'detail',
+//                     dryRun: true,
+                     root: './app',
+//                     root: './app/moneypenny-client',
+//                     root: './app/moneypenny-mongo-storage',
+                     excludes: ['**/__test__/*.js', 'test-utils/**'],
+                     print: 'detail',
+                     recursive: true,
+                     //require: './tests/bable-setup.js',
+                     istanbulOptions: ['--include-all-sources'],
+                     reportFormats:  ['lcov', 'html']
+                }
+            }
+            //coverage: {
+            //    src: ['app/**/__test__/*.js'], 
+            //    options : {
+            //        dryRun: false,
+            //        coverageFolder: 'coverage',
+            //        root: './app/moneypenny-server',
+            //        excludes: ['**/__test__/*.js'],
+            //        print: 'detail',
                     //scriptPath: require.resolve('babel-istanbul'),
                     //istanbulOptions: ['--use-babel-runtime'],
                     //mochaOptions: ['require ./tests/bable-setup.js'],
-                    require: './tests/bable-setup.js',
-                    recursive: true,
-                    istanbulOptions: ['--include-all-sources']
+            //        require: './tests/bable-setup.js',
+            //        recursive: true,
+            //        istanbulOptions: ['--include-all-sources']
                     // reportFormats:  ['lcov', 'html'] 
-                }
-            }
+            //    }
+            //}
         },
         coveralls: {
         // Options relevant to all targets
@@ -69,6 +96,8 @@ module.exports = function(grunt){
     grunt.loadNpmTasks('grunt-mocha-istanbul');
     grunt.loadNpmTasks('grunt-coveralls');
     grunt.registerTask('test', ['mocha_istanbul:coverage', 'coveralls:post_lcov']);
+    grunt.loadNpmTasks('grunt-contrib-jshint');
+
 };
 
 

@@ -59,9 +59,9 @@ module.exports = (options) => {
 		
 		initialize: (app) => {
 			app.use(oAuth2Server.inject());
-			app.use(TOKEN_ENDPOINT, oAuth2Server.controller.token)
+			app.use(TOKEN_ENDPOINT, oAuth2Server.controller.token);
 			app.use(ensureAuthenticated(options));
-			app.use(AUTHORIZATION_ENDPOINT, oAuth2Server.controller.authorization)
+			app.use(AUTHORIZATION_ENDPOINT, oAuth2Server.controller.authorization);
 			
 		
 		},
@@ -145,5 +145,5 @@ module.exports = (options) => {
             }
             return res.redirect(redirectUrl);         
         } 
-	}
-}
+	};
+};

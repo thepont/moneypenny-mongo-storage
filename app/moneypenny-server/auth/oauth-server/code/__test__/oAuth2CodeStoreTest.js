@@ -86,7 +86,7 @@ describe('oAuthCodeStore', () => {
 			}
 			
 			var oAuthCodeStore = require('../oAuth2CodeStore')(fakeStorageProvide, 'secret');
-			oAuthCodeStore.fetchByCode('testcode', (err, item)=>{
+			oAuthCodeStore.fetchByCode('testcode', (error, item)=>{
 				try{
 					item.should.have.property('userId', 'userId');
 					item.should.have.property('clientId', 'clientId');
@@ -130,7 +130,7 @@ describe('oAuthCodeStore', () => {
 			
 			oAuthCodeStore.removeByCode('code', (error, saved)=>{
 				try{
-					remove.called.should.be.true;
+					remove.called.should.be.true();
 					should.not.exist(error);
 					done();
 				} catch (err){
@@ -139,7 +139,7 @@ describe('oAuthCodeStore', () => {
 			});
 		});
 		
-		it('Calls callback with error if an error occurs', () =>{
+		it('Calls callback with error if an error occurs', () => {
 			var fakeStorageProvide =  {
 				codeStore : {
 					removeByCode : (code) => Promise.reject('err')
@@ -158,17 +158,15 @@ describe('oAuthCodeStore', () => {
 	});
 	
 	describe('checkTTL', ()=>{
-		
 		var fakeStorageProvide =  {
 				codeStore : {
 					save :  (userid, clientid, scope, ttl) => Promise.resolve({})
 				}
 			}
-		
 		var oAuthCodeStore = require('../oAuth2CodeStore')(fakeStorageProvide, 'secret');
 		
-		it('Returns true if the token is still valid', (done)=> {
-				oAuthCodeStore.create('userId', 'clinetId', 'scope', 10000000, (err, code) => {
+		it('Returns true if the token is still valid', (done) => {
+				oAuthCodeStore.create('userId', 'clinetId', 'scope', 10000000, (error, code) => {
 					try{
 						oAuthCodeStore.checkTTL({code : code}).should.equal(true);
 						done();
@@ -176,16 +174,16 @@ describe('oAuthCodeStore', () => {
 						done(err);
 					}
 				})
-		}),
-		it('Returns false if the token is no longer valid', (done)=>{
-				oAuthCodeStore.create('userId', 'clinetId', 'scope', -1, (err, code) => {
-					try{
-						oAuthCodeStore.checkTTL({ code : code}).should.equal(false);
-						done();
-					} catch (err){
-						done(err);
-					} 
-				})
+		});
+		it('Returns false if the token is no longer valid', (done) => {
+			oAuthCodeStore.create('userId', 'clinetId', 'scope', -1, (error, code) => {
+				try{
+					oAuthCodeStore.checkTTL({ code : code}).should.equal(false);
+					done();
+				} catch (err){
+					done(err);
+				} 
+			});
 		});
 	});
 });

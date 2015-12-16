@@ -42,9 +42,9 @@ describe('oAuth2UserStore', () => {
 				}
 			});
 			
-			oAuth2UserStore.fetchById(user._id, (err, ret) => {
+			oAuth2UserStore.fetchById(user._id, (error, ret) => {
 				try {
-					should.not.exist(err);
+					should.not.exist(error);
 					ret.should.equal(user);
 					done();
 				} catch (err) {
@@ -60,9 +60,9 @@ describe('oAuth2UserStore', () => {
 					fetchById: () => Promise.reject('err')
 				}
 			});
-			oAuth2UserStore.fetchById(new ObjectID(), (err, user) => {
+			oAuth2UserStore.fetchById(new ObjectID(), (error, user) => {
 				try {
-					should.exist(err);
+					should.exist(error);
 					done();
 				} catch (err) {
 					done(err);

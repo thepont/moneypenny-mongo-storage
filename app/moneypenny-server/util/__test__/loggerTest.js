@@ -6,6 +6,6 @@ describe('SamlStrategy', () => {
 		var logger = proxyquire('../logger', {
 			'elephas/lib/logger' : fakeLogger
 		});
-		logger.should.equal(fakeLogger)
+		logger.should.equal(fakeLogger);
 	});
 });

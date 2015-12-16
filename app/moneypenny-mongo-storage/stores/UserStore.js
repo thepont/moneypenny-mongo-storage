@@ -2,7 +2,7 @@ var Collection = require('moneypenny-mongo-storage/db/collection');
 var UserQuery = require('./UserQuery');
 
 module.exports = function(collection){
-    var userCollection = new Collection(collection);;
+    var userCollection = new Collection(collection);
     return{
         /**
         * Saves a user in the database.

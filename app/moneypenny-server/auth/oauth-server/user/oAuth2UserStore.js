@@ -25,5 +25,5 @@ module.exports = function(storageProvider){
         getId: (user) => {
             return user._id;
         }
-    }
+    };
 };

@@ -6,7 +6,7 @@ var PasswordCrypto = {
     checkPassword : function(password, hash){
         return new Promise(function(resolve, reject){
             bcrypt.compare(password, hash, function(err, res) {
-                if ( res == true )
+                if ( res === true )
                 {
                     return resolve(password);
                 } else {
