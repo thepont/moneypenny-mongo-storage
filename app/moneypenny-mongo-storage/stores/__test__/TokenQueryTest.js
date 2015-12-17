@@ -21,8 +21,8 @@ describe('TokenQuery()', () => {
 	describe('userIdEquals()', () => {
 		var q = oAuth2TokenQuery().userIdEquals('test'); 
 		QueryTests.itHasCorrectProperties(q);
-		it('Creates a query based on the clientid', () =>{
-			q.query.should.have.property('userId', 'test');
+		it('Creates a query based on the userId', () =>{
+			q.query.should.have.property('userId', 'test');	
 		});
 	});
 });

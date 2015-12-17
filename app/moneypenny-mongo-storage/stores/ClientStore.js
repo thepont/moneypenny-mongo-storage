@@ -7,9 +7,8 @@ module.exports  = function(collection){
 		createClient: (client) => {
 			return clientCollection.save(client);
 		},
-		fetchById: (clientId, cb) => {
+		fetchById: (clientId) => {
 			var query = ClientQuery().idEquals(clientId);
-			console.log(clientId, query);
 			return clientCollection.findOne(query);
 		}
 	}

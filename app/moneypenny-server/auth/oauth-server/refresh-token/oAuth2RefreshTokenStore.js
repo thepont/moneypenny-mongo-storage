@@ -29,7 +29,6 @@ module.exports = function(storageProvider){
         },
     
         create: function(userId, clientId, scope, cb) {
-            console.log('Create Called For Refresh Token', userId, clientId);
             var token = crypto.randomBytes(64).toString('hex');
             
             var refreshToken = {

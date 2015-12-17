@@ -1,6 +1,6 @@
 var proxyquire = require('proxyquire');
 var sinon = require('sinon');
-describe('SamlStrategy', () => {
+describe('logger', () => {
 	it('Exposes the elephas logger', () =>{
 		var fakeLogger = {name: 'fakeLogger'};
 		var logger = proxyquire('../logger', {
