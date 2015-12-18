@@ -7,7 +7,7 @@ const COLLECTION_CLIENT = 'oauth_client';
 const COLLECTION_CODE = 'oauth_code';
 
 module.exports = function(options){
-    if(!options.db){
+    if(!options || !options.db){
         throw new Error(ERR_DB_NOT_SET);
     }
     
