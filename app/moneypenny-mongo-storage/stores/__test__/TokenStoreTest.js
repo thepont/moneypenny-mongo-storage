@@ -74,4 +74,33 @@ describe('RefreshTokenStore()', () => {
        });
 	   
 	});
+    
+    describe('fetchByToken()', () => {
+        it('fetches a code details by a user id and client id, returns the promise from the collection',(done) =>{
+            var clientId = 'testClientId';
+            var userId = 'testUserId';
+            var token = new ObjectID();
+            var tokenDetails = {
+                token : token
+            }
+            var findOne = sinon.stub().returns(Promise.resolve(tokenDetails));
+            var tokenStore = proxyquire('../TokenStore', {
+                'moneypenny-mongo-storage/db/collection' : function(){
+                    this.findOne = findOne;
+                }
+            })();
+            tokenStore.fetchByUserIdClientId(userId, clientId).then((ret)=>{
+                    try{
+                        findOne.called.should.equal(true);
+                        ret.should.equal(tokenDetails);
+                        done();
+                    } catch (ex){
+                        done(ex);
+                    }
+            }).catch((ex)=>{
+                    done(ex);
+            });
+       });
+	   
+	});
 });

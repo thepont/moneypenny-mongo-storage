@@ -34,46 +34,19 @@ module.exports = function(grunt){
                     dryRun: true,
                     ui: true,
                     scriptPath: require.resolve('babel-istanbul'),
-                    //istanbulOptions: '--use-babel-runtime',
-                    //require: './tests/bable-setup.js'
-                    //mochaOptions: '--require ./tests/bable-setup.js' 
                 }
             },
-            //coverage:{
-            //    src: 'app/**/__test__/*.js'
-            //},
             coverage:{
                 src: 'app/**/__test__/*.js',
                 options : {
-//                     dryRun: true,
                      root: './app',
-//                     root: './app/moneypenny-client',
-//                     root: './app/moneypenny-mongo-storage',
                      excludes: ['**/__test__/*.js', 'test-utils/**'],
                      print: 'detail',
                      recursive: true,
-                     //require: './tests/bable-setup.js',
                      istanbulOptions: ['--include-all-sources'],
                      reportFormats:  ['lcov', 'html']
                 }
             }
-            //coverage: {
-            //    src: ['app/**/__test__/*.js'], 
-            //    options : {
-            //        dryRun: false,
-            //        coverageFolder: 'coverage',
-            //        root: './app/moneypenny-server',
-            //        excludes: ['**/__test__/*.js'],
-            //        print: 'detail',
-                    //scriptPath: require.resolve('babel-istanbul'),
-                    //istanbulOptions: ['--use-babel-runtime'],
-                    //mochaOptions: ['require ./tests/bable-setup.js'],
-            //        require: './tests/bable-setup.js',
-            //        recursive: true,
-            //        istanbulOptions: ['--include-all-sources']
-                    // reportFormats:  ['lcov', 'html'] 
-            //    }
-            //}
         },
         coveralls: {
         // Options relevant to all targets

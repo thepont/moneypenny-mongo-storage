@@ -81,24 +81,19 @@ var Collection = function(dbCollection) {
     */
     
     this.save = function(doc) {
-        console.log('saving doc', dbCollection);
         return checkParams(doc).then(()=>{
             return new Promise((resolve, reject) => {    
                 if (doc._id) {
                     doc._id = new ObjectID(doc._id);
                 }
-                console.log('saving doc1');
                 dbCollection.save(doc, function(err, result) {
                     if (err) {
-                        console.log('saving doc2');
                         return reject(err);
                     }
     
                     if (doc._id) {
-                        console.log('saving doc3');
                         return resolve(doc);
                     }
-                    console.log('saving doc4');
                     return resolve(result.ops[0]);
                 });
             });
