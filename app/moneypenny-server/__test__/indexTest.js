@@ -199,7 +199,7 @@ describe('index', () => {
 				redirect : sinon.stub()
 			};
 			moneypennyServer.loginAndRedirect(req,res);
-			req.redirect.calledWith(req.session.returnTo).should.be.true();
+			res.redirect.calledWith(req.session.returnTo).should.be.true();
 		})
 		it('Redirects the user to a default url if no location is found in the session', () => {
 			var req = {
@@ -211,7 +211,7 @@ describe('index', () => {
 				redirect : sinon.stub()
 			};
 			moneypennyServer.loginAndRedirect(req,res);
-			req.redirect.calledWith(redirectUrl).should.be.true();
+			res.redirect.calledWith(redirectUrl).should.be.true();
 			
 		})
 	});
