@@ -156,7 +156,7 @@ describe('oAuthCodeStore', () => {
 			});
 		});
 	});
-	
+												
 	describe('checkTTL', ()=>{
 		var fakeStorageProvide =  {
 				codeStore : {

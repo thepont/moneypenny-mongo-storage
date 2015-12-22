@@ -62,8 +62,6 @@ module.exports = (options) => {
 			app.use(TOKEN_ENDPOINT, oAuth2Server.controller.token);
 			app.use(ensureAuthenticated(options));
 			app.use(AUTHORIZATION_ENDPOINT, oAuth2Server.controller.authorization);
-			
-		
 		},
 		
 		/**
