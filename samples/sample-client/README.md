@@ -14,3 +14,17 @@ The following record, as well as a user will have to be added to the money penny
     "secret" : "$2a$10$uXE9L6J5Xq3wW2UCxI11juqVU3xIhNSP2ZoFaiSH//XnfPdQCOU6W"
 }
 ```
+
+###local_users
+
+Add a user with the username: _sample_user_ and password: _production1_ to the database.
+
+```
+{
+    "_id" : ObjectId("561edd43fdb77869f16df10f"),
+    "username" : "sample_user",
+    "hash" : "$2a$10$uXE9L6J5Xq3wW2UCxI11juqVU3xIhNSP2ZoFaiSH//XnfPdQCOU6W",
+    "firstName" : "John",
+    "lastName" : "Smith"
+}
+```
