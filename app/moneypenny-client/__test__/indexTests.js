@@ -272,13 +272,13 @@ describe('index', () => {
             });
         });
         describe('initialize()', ()=>{
-            it('initializes passport.', (done) => {
+            it('initializes passport.', () => {
                 
             });
-            it('adds passport.session.', (done) => {
+            it('adds passport.session.', () => {
                 
             });
-            it('sets up oauth callback routes.', (done) => {
+            it('sets up oauth callback routes.', () => {
                 
             });
         });
