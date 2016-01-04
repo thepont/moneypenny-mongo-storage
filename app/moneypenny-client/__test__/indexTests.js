@@ -1,4 +1,5 @@
 var should = require('should');
+var sinon = require('sinon');
 var proxyquire = require('proxyquire');
 var jwt = require('jsonwebtoken');
 
@@ -272,14 +273,82 @@ describe('index', () => {
             });
         });
         describe('initialize()', ()=>{
-            it('initializes passport.', () => {
+
+               
+            it('initializes passport and adds it\'s session.', () => {
+                var app = {
+                    use : sinon.stub(),
+                    get : sinon.stub()
+                };
+                var passportInit = () => 'initialize';
+                var passportSession = () => 'session';
                 
+                var OAuthClient = proxyquire('../index', {
+                        'passport' : {
+                            authenticate: () => {},
+                            use: () => {},
+                            initialize: passportInit,
+                            session: passportSession,
+                            serializeUser: () => {},
+                            deserializeUser: () => {}
+                        }
+                    });
+                var oauthClient =  new OAuthClient({
+                        jwtSecret: 'top secret',
+                        providerHost: 'testProviderHost',
+                        serverHost: 'testServerHost',
+                        oAuthClientID: 'testClientID',
+                        oAuthClientSecret: 'testSecret.',
+                        loginUri: 'loginUri',
+                        callbackURI: 'callbackUri'
+                    });
+                    
+                    
+                oauthClient.initialize(app);
+                app.use.calledWith('initialize').should.be.true();
+                app.use.calledWith('session').should.be.true();
             });
-            it('adds passport.session.', () => {
-                
-            });
-            it('sets up oauth callback routes.', () => {
-                
+            describe('route setup', ()=> {
+                describe('callback route', ()=>{
+                    var OAuth2Strategy = function(options, callback){
+                        
+                    };
+                    var OAuthClient = proxyquire('../index', {
+                        'passport-oauth' : {
+                            OAuth2Strategy : OAuth2Strategy
+                        }
+                    });
+                    
+                    var oauthClient =  new OAuthClient({
+                        jwtSecret: 'top secret',
+                        providerHost: 'testProviderHost',
+                        serverHost: 'testServerHost',
+                        oAuthClientID: 'testClientID',
+                        oAuthClientSecret: 'testSecret.',
+                        loginUri: 'loginUri',
+                        callbackURI: 'callbackUri'
+                    });
+                    
+                    var getLst = {};
+                    var app = {
+                        use : sinon.stub(),
+                        get : (url, fn1, fn2) => {
+                            getLst[url] = fn2;
+                        }
+                    };
+                    
+                    oauthClient.initialize(app);
+                    it('returns json version of user.', () => {
+                        var req = {
+                            user : 'user'
+                        }
+                        var res = {
+                            setHeader: sinon.stub(),
+                            json: (param) => {return param}
+                        }
+                        getLst.callbackUri(req, res).should.equal(req.user);
+                    });
+                })
             });
         });
     });
