@@ -231,7 +231,45 @@ describe('index', () => {
                 }
                          
                 oauthClient.checkAuthenticated(req, res, null);
-            })
+            });
+            it('uses localapikey authentication if token is found in header', (done) => {
+                var OAuthClient = proxyquire('../index', {
+                    'passport-localapikey' : {
+                        Strategy : function(){
+                            this.name = 'localapikey';
+                            this._apiKeyField = 'apikey';
+                            this._apiKeyHeader = 'apikey';
+                            this.authenticate = function() {
+                                done();
+                            };
+                            
+                        }
+                    }
+                });
+                var oauthClient =  new OAuthClient({
+                    jwtSecret: 'top secret',
+                    providerHost: 'testProviderHost',
+                    serverHost: 'testServerHost',
+                    oAuthClientID: 'testClientID',
+                    oAuthClientSecret: 'testSecret.'
+                });
+                var req = {
+                        isAuthenticated : () => false,
+                        session : {
+                            
+                        },
+                        query: {},
+                        headers: {
+                            apikey : 'test'
+                        },
+                        body: {},
+                        originalUrl : 'testurl'
+                    }
+                // test logic in redirect      
+                var res = {
+                }
+                oauthClient.checkAuthenticated(req, res, null);
+            });
         });
     });
 });
