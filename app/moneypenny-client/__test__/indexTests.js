@@ -271,5 +271,16 @@ describe('index', () => {
                 oauthClient.checkAuthenticated(req, res, null);
             });
         });
+        describe('initialize()', ()=>{
+            it('initializes passport.', (done) => {
+                
+            });
+            it('adds passport.session.', (done) => {
+                
+            });
+            it('sets up oauth callback routes.', (done) => {
+                
+            });
+        });
     });
 });
