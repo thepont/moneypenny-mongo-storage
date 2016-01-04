@@ -56,10 +56,10 @@ module.exports = function(options){
 	var loginUri = setOptionOrDefault('loginUri', LOGIN_URI);
 
 	//APIKeyStrategy and extract users from JWT.
-	var apiKeyStrategy = new LocalAPIKeyStrategy(userFromJwt(jwtSecret))
+	var apiKeyStrategy = new LocalAPIKeyStrategy(userFromJwt(jwtSecret));
 	
 	var apiKeyField = apiKeyStrategy._apiKeyField;
-	var apiKeyHeaderField = apiKeyStrategy._apiKeyHeader
+	var apiKeyHeaderField = apiKeyStrategy._apiKeyHeader;
 	
 	function setOptionOrError(name){
 		if ( !options[name] ){
