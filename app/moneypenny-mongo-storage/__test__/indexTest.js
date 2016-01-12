@@ -1,7 +1,6 @@
 var ObjectID = require('mongodb').ObjectID;
 var sinon = require('sinon');
 var proxyquire = require('proxyquire');
-var should = require('should');
 
 var moneypennyMongoStore = require('../index')({db : {
 	collection : () => {} 

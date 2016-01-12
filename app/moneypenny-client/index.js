@@ -124,7 +124,7 @@ module.exports = function(options){
 		}
 	});
 	
-	/*
+	/**
 	 * Deserialize user by extracting it from JWT.
 	 */
 	passport.deserializeUser(userFromJwt(jwtSecret));	
