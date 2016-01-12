@@ -1,7 +1,7 @@
 {
-  "name": "moneypenny-mongo-store",
+  "name": "moneypenny-mongo-storage",
   "version": "0.0.1",
-  "description": "Authentication Server for TRC",
+  "description": "Authentication Server",
   "main": "app.js",
   "dependencies": {
     "babel": "^5.8.23",
@@ -55,8 +55,7 @@
     "phantomjs": "^1.9.18",
     "proxyquire": "^1.7.3",
     "should": "^7.1.1",
-    "sinon": "^1.17.2",
-    "test-utils": "file:./app/test-utils"
+    "sinon": "^1.17.2"
   },
   "scripts": {
     "test": "grunt test"
