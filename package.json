@@ -1,5 +1,5 @@
 {
-  "name": "authentication-server",
+  "name": "moneypenny-mongo-store",
   "version": "0.0.1",
   "description": "Authentication Server for TRC",
   "main": "app.js",
