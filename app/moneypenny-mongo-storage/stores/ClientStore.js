@@ -1,4 +1,4 @@
-var Collection = require('moneypenny-mongo-storage/db/collection');
+var Collection = require('../db/collection');
 var ClientQuery = require('./ClientQuery');
 
 module.exports  = function(collection){

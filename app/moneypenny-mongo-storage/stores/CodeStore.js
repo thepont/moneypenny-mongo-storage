@@ -1,4 +1,4 @@
-var Collection = require('moneypenny-mongo-storage/db/collection');
+var Collection = require('../db/collection');
 var CodeQuery = require('./CodeQuery');
 
 
@@ -11,7 +11,7 @@ module.exports = function(collection){
         fetchByCode : function(code){
             var query = CodeQuery().codeEquals(code);
             return codeCollection.findOne(query);
-        }, 
+        },
         removeByCode : function(code){
             var query = CodeQuery().codeEquals(code);
             return codeCollection.remove(query);

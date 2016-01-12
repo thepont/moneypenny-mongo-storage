@@ -1,4 +1,4 @@
-var Collection = require('moneypenny-mongo-storage/db/collection');
+var Collection = require('../db/collection');
 var TokenQuery = require('./TokenQuery');
 
 module.exports = function(collection){
@@ -16,4 +16,4 @@ module.exports = function(collection){
 			return tokenCollection.findOne(query);
 		}
 	}
-} 
+}
