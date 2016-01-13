@@ -12,9 +12,9 @@ module.exports = function(options){
     }
     
     var oauth_users = options.db.collection(options.userCollection || COLLECTION_OAUTH_USERS);
-	var oauth_refresh_token = options.db.collection(options.refreshTokenCollection || COLLECTION_REFRESH_TOKEN);
-	var oauth_token = options.db.collection(options.tokenCollection ||COLLECTION_TOKEN);
-	var oauth_client = options.db.collection(options.clientCollection || COLLECTION_CLIENT);
+    var oauth_refresh_token = options.db.collection(options.refreshTokenCollection || COLLECTION_REFRESH_TOKEN);
+    var oauth_token = options.db.collection(options.tokenCollection ||COLLECTION_TOKEN);
+    var oauth_client = options.db.collection(options.clientCollection || COLLECTION_CLIENT);
     var oauth_code = options.db.collection(options.codeCollection || COLLECTION_CODE);
     
     return {
