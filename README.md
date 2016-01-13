@@ -1,8 +1,8 @@
-![moneypenny-mongo-storage]
+![moneypenny-mongo-storage](https://upload.wikimedia.org/wikipedia/en/9/9b/Miss_Moneypenny_by_Lois_Maxwell.jpg)
 
-(https://upload.wikimedia.org/wikipedia/en/9/9b/Miss_Moneypenny_by_Lois_Maxwell.jpg)
+# moneypenny-mongo-storage - Authentication Service 
 
-# moneypenny-mongo-storage - Authentication Service ( mongo storage for moneypanny authentication service.)
+mongo storage for moneypanny authentication service.
 
 [![Circle CI](https://circleci.com/gh/blueflag/moneypenny/tree/master.svg?style=shield&circle-token=0627ef84b056dbf221c6b6a5025c101cdfbc8991)](https://circleci.com/gh/blueflag/moneypenny/tree/master) 
 [![Coverage Status](https://coveralls.io/repos/blueflag/moneypenny/badge.svg?branch=test&service=github&t=KTAhQi)](https://coveralls.io/github/blueflag/moneypenny?branch=master)
