@@ -1,7 +1,7 @@
 {
   "name": "moneypenny-mongo-storage",
   "version": "1.0.0",
-  "description": "Mongo storage for moneypenny auth server",
+  "description": "Mongo storage provider for moneypenny auth server",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,5 +10,11 @@
   "license": " ",
   "dependencies": {
     "mongodb": "^2.1.0"
+  },
+  "devDependencies": {
+    "proxyquire": "^1.7.3",
+    "should": "^8.1.1",
+    "sinon": "^1.17.2",
+    "winston": "^2.1.1"
   }
 }
