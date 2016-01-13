@@ -1,6 +1,7 @@
 ![moneypenny-mongo-storage](https://upload.wikimedia.org/wikipedia/en/9/9b/Miss_Moneypenny_by_Lois_Maxwell.jpg)
 
-# moneypenny-mongo-storage - Authentication Service 
+# moneypenny-mongo-storage
+## Moneypenny Authentication Service Mongo Storage Provider.
 
 mongo storage for moneypanny authentication service.
 
